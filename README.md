@@ -6,19 +6,21 @@
 
 ---
 
-## 🎨 5 大世界级亮色个人网站风格矩阵 (5 Benchmark Styles)
+## 🎨 6 大高质感个人网站风格矩阵 (6 Available Styles)
 
-本作品集提供 5 种独立对标全球顶级技术人/团队的高质感明亮设计风格，全系告别沉闷压抑的纯黑界面，支持页面顶端一键无缝切换：
+本作品集提供 6 种独立完整的技术主页设计风格，涵盖你最开始交付的经典原版以及 5 大对标全球顶级技术团队的明亮风格，全系告别沉闷压抑的纯黑界面，支持页面顶端一键无缝切换：
 
-1. **✨ 苹果 / Raycast 便当盒风格 (Flagship Bento Grid)** - [index.html / bento.html](https://taozheyin-dev.github.io/)
+1. **🏛️ 原版经典风格 (Original Classic)** - [classic.html](https://taozheyin-dev.github.io/classic.html)
+   - *设计特色*：最开始交付的原汁原味经典版，柔和白紫渐变 Hero、卡片式布局、平滑滚动、完整的工具分类与技术栈展示。
+2. **✨ 苹果 / Raycast 便当盒风格 (Flagship Bento Grid)** - [index.html / bento.html](https://taozheyin-dev.github.io/)
    - *设计灵感*：Apple 官网与 Raycast 招牌 Bento Grid，圆角卡片、柔和微点背景、信息分块鲜明、模块化排版。
-2. **🌿 极简主义风格 (Lee Robinson / Vercel Minimal)** - [minimal.html](https://taozheyin-dev.github.io/minimal.html)
+3. **🌿 极简主义风格 (Lee Robinson / Vercel Minimal)** - [minimal.html](https://taozheyin-dev.github.io/minimal.html)
    - *设计灵感*：Vercel 副总裁 Lee Robinson 个人主页，克制留白、清晰无衬线排版、经典下划线与无杂音阅读体验。
-3. **⚡ 工艺极客风格 (Linear / Rauno Craft)** - [craft.html](https://taozheyin-dev.github.io/craft.html)
+4. **⚡ 工艺极客风格 (Linear / Rauno Craft)** - [craft.html](https://taozheyin-dev.github.io/craft.html)
    - *设计灵感*：Linear 团队与著名界面工艺师 Rauno Freiberg，1px 精工细线、交互式 Segmented Control 选项卡、细腻微交互。
-4. **📑 经典双栏风格 (Brittany Chiang Split-Screen)** - [split.html](https://taozheyin-dev.github.io/split.html)
+5. **📑 经典双栏风格 (Brittany Chiang Split-Screen)** - [split.html](https://taozheyin-dev.github.io/split.html)
    - *设计灵感*：全球被学习最多的开发者主页 Brittany Chiang，左侧固定视口信息锚点、右侧沉浸式长流阅读、动态伸缩指示线。
-5. **📰 科技期刊研报风格 (Stripe Tech Editorial)** - [editorial.html](https://taozheyin-dev.github.io/editorial.html)
+6. **📰 科技期刊研报风格 (Stripe Tech Editorial)** - [editorial.html](https://taozheyin-dev.github.io/editorial.html)
    - *设计灵感*：Stripe Press 与 Stripe 官方技术年报，Stripe 经典 Navy 蓝与紫罗兰基调、技术案例研报、量化对比矩阵大表。
 
 ---
