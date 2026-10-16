@@ -5,52 +5,480 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Agent 工具实践之旅 | taozheyin-dev</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Loading Experience...</p>
+        </div>
+    </div>
+
+    <!-- Cursor Follower -->
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <!-- Navigation -->
     <nav class="navbar">
-        <div class="container">
-            <div class="nav-brand">AI Agent 实践</div>
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text">taozheyin</span>
+                <span class="logo-dot">.</span>
+                <span class="logo-dev">dev</span>
+            </div>
+            <button class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <ul class="nav-menu">
-                <li><a href="#agents">工具概览</a></li>
-                <li><a href="#projects">项目实战</a></li>
-                <li><a href="#achievements">成果展示</a></li>
-                <li><a href="#insights">心得体会</a></li>
+                <li><a href="#home" class="nav-link">首页</a></li>
+                <li><a href="#work" class="nav-link">作品</a></li>
+                <li><a href="#tools" class="nav-link">工具</a></li>
+                <li><a href="#about" class="nav-link">关于</a></li>
             </ul>
         </div>
     </nav>
 
-    <header class="hero">
-        <div class="container">
-            <h1 class="hero-title">探索 AI Agent 的无限可能</h1>
-            <p class="hero-subtitle">使用 8 款主流 AI 开发工具，完成 20+ 实战项目</p>
-            <div class="hero-stats">
-                <div class="stat-item">
-                    <span class="stat-number">8</span>
-                    <span class="stat-label">AI 工具</span>
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <div class="hero-background">
+            <div class="gradient-sphere sphere-1"></div>
+            <div class="gradient-sphere sphere-2"></div>
+            <div class="gradient-sphere sphere-3"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <p class="hero-label">AI Development & Innovation</p>
+                <h1 class="hero-title">
+                    <span class="title-line">构建智能</span>
+                    <span class="title-line">驱动未来</span>
+                </h1>
+                <p class="hero-description">
+                    深度探索 8 款 AI Agent 工具，实战 20+ 项目，<br>
+                    打造下一代智能开发体验
+                </p>
+                <div class="hero-cta">
+                    <a href="#work" class="btn-primary">
+                        <span>探索作品</span>
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                            <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/taozheyin-dev" class="btn-secondary" target="_blank">
+                        <span>GitHub</span>
+                    </a>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">20+</span>
-                    <span class="stat-label">实战项目</span>
+            </div>
+            
+            <div class="hero-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" data-target="8">0</div>
+                    <div class="stat-label">AI 工具</div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">34</span>
-                    <span class="stat-label">API 渠道</span>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="20">0</div>
+                    <div class="stat-label">实战项目</div>
                 </div>
-                <div class="stat-item">
-                    <span class="stat-number">273</span>
-                    <span class="stat-label">活跃技能</span>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="34">0</div>
+                    <div class="stat-label">API 渠道</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" data-target="273">0</div>
+                    <div class="stat-label">活跃技能</div>
                 </div>
             </div>
         </div>
-    </header>
+        
+        <div class="scroll-indicator">
+            <span>向下滚动</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
 
-    <main>
-        <section id="agents" class="section agents-section">
-            <div class="container">
-                <h2 class="section-title">AI Agent 工具矩阵</h2>
-                <p class="section-subtitle">深度使用的 8 款主流 AI 开发工具</p>
-                
-                <div class="agents-grid">
+    <!-- Work Section -->
+    <section id="work" class="work-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">01</span>
+                <h2 class="section-title">精选项目</h2>
+                <p class="section-intro">探索 AI 驱动的创新解决方案</p>
+            </div>
+
+            <div class="project-grid">
+                <article class="project-card featured">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">API 网关</span>
+                            <span class="project-tag">开源贡献</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">CodeBuddy2API 网关</h3>
+                        <p class="project-desc">将 WorkBuddy/CodeBuddy 订阅转换为标准 OpenAI 和 Anthropic API，支持三种协议互转，实现 realtime 流式传输</p>
+                        <ul class="project-highlights">
+                            <li>✓ 支持 Chat、Responses、Messages 三协议</li>
+                            <li>✓ 贡献 PR #52 成功合并上游</li>
+                            <li>✓ 完成 v1.2.7 → v1.3.6 升级</li>
+                        </ul>
+                        <div class="project-footer">
+                            <div class="project-stack">
+                                <span>Python</span>
+                                <span>Docker</span>
+                                <span>OpenAI API</span>
+                            </div>
+                            <a href="#" class="project-link">
+                                <span>查看详情</span>
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M6 12L10 8L6 4" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">配置管理</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">ZCode 多模型环境</h3>
+                        <p class="project-desc">配置 34 个 provider、81 个模型的强大开发环境，管理 273 个精选技能</p>
+                        <div class="project-stats">
+                            <div class="stat"><span>34</span> Providers</div>
+                            <div class="stat"><span>81</span> Models</div>
+                            <div class="stat"><span>273</span> Skills</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">高性能</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">NIM Proxy 部署</h3>
+                        <p class="project-desc">NVIDIA API 网关，管理 478 个密钥池，完成汉化和模型竞速修复</p>
+                        <div class="project-stats">
+                            <div class="stat"><span>478</span> Keys</div>
+                            <div class="stat"><span>378</span> Tests Pass</div>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">Serverless</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">临时邮箱服务</h3>
+                        <p class="project-desc">基于 Cloudflare Workers + D1 + KV 的无服务器邮箱系统，提升注册成功率至 90%</p>
+                        <div class="project-highlight">成功率: 0/17 → 9/10</div>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">Web App</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">GitHub 账号管理器</h3>
+                        <p class="project-desc">多账号管理工具，实现设备码登录验证，70 个测试全通过</p>
+                        <div class="project-badge">P0 级别</div>
+                    </div>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-image">
+                        <div class="project-overlay">
+                            <span class="project-tag">Static Site</span>
+                        </div>
+                    </div>
+                    <div class="project-content">
+                        <h3 class="project-title">公益导航站</h3>
+                        <p class="project-desc">AI 服务聚合导航平台，纯静态实现，计划部署到 Cloudflare Pages</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="tools-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-number">02</span>
+                <h2 class="section-title">工具箱</h2>
+                <p class="section-intro">深度使用的 AI Agent 工具</p>
+            </div>
+
+            <div class="tools-grid">
+                <div class="tool-card" data-tool="claude">
+                    <div class="tool-icon">🤖</div>
+                    <h3>Claude Code</h3>
+                    <p>主力开发工具，用于复杂项目的架构设计和代码实现</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 85%"></div>
+                        <span class="usage-text">使用频率: 高</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="zcode">
+                    <div class="tool-icon">⚡</div>
+                    <h3>ZCode</h3>
+                    <p>配置了 34 个 provider、81 个模型的强大开发环境</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 90%"></div>
+                        <span class="usage-text">使用频率: 非常高</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="chatgpt">
+                    <div class="tool-icon">💬</div>
+                    <h3>ChatGPT</h3>
+                    <p>通过 Codex 进行快速原型开发和问题解决</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 70%"></div>
+                        <span class="usage-text">使用频率: 中高</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="kimi">
+                    <div class="tool-icon">🔮</div>
+                    <h3>Kimi Code</h3>
+                    <p>长文本处理和代码审查的得力助手</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 65%"></div>
+                        <span class="usage-text">使用频率: 中</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="codebuddy">
+                    <div class="tool-icon">🛠️</div>
+                    <h3>CodeBuddy</h3>
+                    <p>通过 codebuddy2api 网关实现多协议支持</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 60%"></div>
+                        <span class="usage-text">使用频率: 中</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="hermes">
+                    <div class="tool-icon">🌟</div>
+                    <h3>Hermes</h3>
+                    <p>轻量级任务处理和自动化脚本编写</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 50%"></div>
+                        <span class="usage-text">使用频率: 中低</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="opencode">
+                    <div class="tool-icon">📝</div>
+                    <h3>OpenCode</h3>
+                    <p>开源代码分析和文档生成工具</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 45%"></div>
+                        <span class="usage-text">使用频率: 低</span>
+                    </div>
+                </div>
+
+                <div class="tool-card" data-tool="pi">
+                    <div class="tool-icon">🎯</div>
+                    <h3>Pi</h3>
+                    <p>对话式编程助手，适合探索性开发</p>
+                    <div class="tool-usage">
+                        <div class="usage-bar" style="--usage: 40%"></div>
+                        <span class="usage-text">使用频率: 低</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-content">
+                    <div class="section-header">
+                        <span class="section-number">03</span>
+                        <h2 class="section-title">关于我</h2>
+                    </div>
+                    
+                    <div class="about-text">
+                        <p class="lead">AI 开发探索者，专注于多模型协作和 API 网关技术</p>
+                        
+                        <p>从深度使用 8 款 AI Agent 工具开始，我探索了智能开发的各种可能性。通过实战 20+ 项目，积累了从 API 网关设计、多模型配置管理到开源贡献的丰富经验。</p>
+                        
+                        <p>我相信 AI 不仅是工具，更是拓展思维边界的伙伴。每个项目都是一次学习和创新的机会，每次失败都是通向更好解决方案的路径。</p>
+
+                        <div class="expertise-list">
+                            <div class="expertise-item">
+                                <div class="expertise-icon">🔧</div>
+                                <div>
+                                    <h4>API 网关开发</h4>
+                                    <p>设计和部署多个 AI API 网关，实现协议转换和流量管理</p>
+                                </div>
+                            </div>
+                            
+                            <div class="expertise-item">
+                                <div class="expertise-icon">⚙️</div>
+                                <div>
+                                    <h4>多模型配置</h4>
+                                    <p>管理 34 个 provider、81 个模型的复杂开发环境</p>
+                                </div>
+                            </div>
+                            
+                            <div class="expertise-item">
+                                <div class="expertise-icon">🌐</div>
+                                <div>
+                                    <h4>开源贡献</h4>
+                                    <p>积极参与开源项目，贡献代码并与社区协作</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="cta-section">
+                            <a href="https://github.com/taozheyin-dev" class="btn-primary" target="_blank">
+                                <span>访问 GitHub</span>
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                    <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-visual">
+                    <div class="skills-chart">
+                        <div class="skill-item">
+                            <div class="skill-name">API 开发</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 90%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Python</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Docker</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 80%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Go</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 75%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Web Development</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-name">Cloudflare</div>
+                            <div class="skill-bar">
+                                <div class="skill-fill" style="--skill: 70%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-card">
+                        <h4>联系方式</h4>
+                        <div class="contact-item">
+                            <span class="contact-icon">📧</span>
+                            <span>通过 GitHub 联系</span>
+                        </div>
+                        <div class="contact-item">
+                            <span class="contact-icon">🌐</span>
+                            <span>taozheyin-dev.github.io</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-text">taozheyin</span>
+                        <span class="logo-dot">.</span>
+                        <span class="logo-dev">dev</span>
+                    </div>
+                    <p>探索 AI 驱动的开发未来</p>
+                </div>
+
+                <div class="footer-links">
+                    <div class="footer-column">
+                        <h4>快速链接</h4>
+                        <ul>
+                            <li><a href="#home">首页</a></li>
+                            <li><a href="#work">作品</a></li>
+                            <li><a href="#tools">工具</a></li>
+                            <li><a href="#about">关于</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>项目</h4>
+                        <ul>
+                            <li><a href="#">CodeBuddy2API</a></li>
+                            <li><a href="#">NIM Proxy</a></li>
+                            <li><a href="#">公益导航站</a></li>
+                            <li><a href="#">临时邮箱</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="footer-column">
+                        <h4>社交</h4>
+                        <ul>
+                            <li><a href="https://github.com/taozheyin-dev" target="_blank">GitHub</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 taozheyin-dev. Powered by AI Agents.</p>
+                <div class="footer-stats">
+                    <span>8 工具</span>
+                    <span>•</span>
+                    <span>20+ 项目</span>
+                    <span>•</span>
+                    <span>273 技能</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
                     <div class="agent-card">
                         <div class="agent-icon">🤖</div>
                         <h3>Claude Code</h3>
