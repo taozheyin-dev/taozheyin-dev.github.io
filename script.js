@@ -1,354 +1,308 @@
-// Modern Portfolio JavaScript
+/**
+ * AI Agent Tools Portfolio - High-Performance Vanilla JS
+ * Author: taozheyin-dev
+ * Features: Zero-delay startup, Dual-theme toggle, Layout-thrashing-free Section Spy,
+ *           Smooth Filter Switcher, Cubic Counter, and SVG Reading Progress Ring.
+ */
 
-// Loading Screen
-window.addEventListener('load', () => {
-    const loadingScreen = document.querySelector('.loading-screen');
-    setTimeout(() => {
-        loadingScreen.classList.add('hidden');
-        document.body.style.overflow = 'auto';
-    }, 1500);
-});
+document.addEventListener('DOMContentLoaded', () => {
+    'use strict';
 
-// Custom Cursor
-const cursorDot = document.querySelector('.cursor-dot');
-const cursorOutline = document.querySelector('.cursor-outline');
+    // -------------------------------------------------------------------------
+    // 1. Dual Theme System (Dark Mode by Default + Persistence)
+    // -------------------------------------------------------------------------
+    const htmlEl = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggle');
+    const STORAGE_KEY = 'taozheyin_portfolio_theme';
 
-let mouseX = 0;
-let mouseY = 0;
-let outlineX = 0;
-let outlineY = 0;
-
-document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    
-    if (cursorDot) {
-        cursorDot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    function initTheme() {
+        const savedTheme = localStorage.getItem(STORAGE_KEY);
+        if (savedTheme) {
+            htmlEl.setAttribute('data-theme', savedTheme);
+        } else {
+            // Default to dark as requested
+            htmlEl.setAttribute('data-theme', 'dark');
+        }
     }
-});
 
-function animateOutline() {
-    outlineX += (mouseX - outlineX) * 0.15;
-    outlineY += (mouseY - outlineY) * 0.15;
-    
-    if (cursorOutline) {
-        cursorOutline.style.transform = `translate(${outlineX - 15}px, ${outlineY - 15}px)`;
+    function toggleTheme() {
+        const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        htmlEl.setAttribute('data-theme', nextTheme);
+        localStorage.setItem(STORAGE_KEY, nextTheme);
     }
-    
-    requestAnimationFrame(animateOutline);
-}
 
-animateOutline();
-
-// Hide cursor on touch devices
-if ('ontouchstart' in window) {
-    if (cursorDot) cursorDot.style.display = 'none';
-    if (cursorOutline) cursorOutline.style.display = 'none';
-}
-
-// Navbar Scroll Effect
-const navbar = document.querySelector('.navbar');
-
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
+    initTheme();
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', toggleTheme);
     }
-});
 
-// Mobile Menu Toggle
-const menuToggle = document.querySelector('.menu-toggle');
-const navMenu = document.querySelector('.nav-menu');
+    // -------------------------------------------------------------------------
+    // 2. High-Performance Unified Scroll Manager (RAF + Passive Listener)
+    // -------------------------------------------------------------------------
+    const navbar = document.getElementById('navbar');
+    const readingProgress = document.getElementById('readingProgress');
+    const backToTopBtn = document.getElementById('backToTop');
+    const progressCircle = document.getElementById('progressCircle');
+    const heroSpheres = document.querySelectorAll('.hero-section .gradient-sphere');
 
-if (menuToggle) {
-    menuToggle.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        menuToggle.classList.toggle('active');
-    });
-}
+    // Circumference for r=20 circle: 2 * PI * 20 ≈ 125.66
+    const CIRCLE_CIRCUMFERENCE = 125.66;
+    let isScrollTicking = false;
 
-// Close menu when clicking nav link
-document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        if (menuToggle) menuToggle.classList.remove('active');
-    });
-});
+    function handleScrollUpdates() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollRatio = scrollHeight > 0 ? Math.min(Math.max(scrollTop / scrollHeight, 0), 1) : 0;
 
-// Smooth Scrolling
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
-        if (target) {
-            const offsetTop = target.offsetTop - 80;
-            window.scrollTo({
-                top: offsetTop,
-                behavior: 'smooth'
+        // 1. Navbar transparent -> frosted glass
+        if (navbar) {
+            if (scrollTop > 60) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // 2. Top reading progress bar (scaleX)
+        if (readingProgress) {
+            readingProgress.style.transform = `scaleX(${scrollRatio})`;
+        }
+
+        // 3. Back to Top Button visibility & Circular Progress Ring
+        if (backToTopBtn) {
+            if (scrollTop > 350) {
+                backToTopBtn.classList.add('visible');
+            } else {
+                backToTopBtn.classList.remove('visible');
+            }
+
+            if (progressCircle) {
+                const dashOffset = CIRCLE_CIRCUMFERENCE - (scrollRatio * CIRCLE_CIRCUMFERENCE);
+                progressCircle.style.strokeDashoffset = dashOffset;
+            }
+        }
+
+        // 4. Subtle Parallax for Hero ambient spheres (only when hero is visible)
+        if (scrollTop < window.innerHeight && heroSpheres.length > 0) {
+            heroSpheres.forEach((sphere, index) => {
+                const factor = 0.25 + (index * 0.08);
+                sphere.style.transform = `translate3d(0, ${scrollTop * factor}px, 0)`;
             });
         }
-    });
-});
 
-// Active Navigation Highlight
-const sections = document.querySelectorAll('section[id]');
-const navLinks = document.querySelectorAll('.nav-link');
+        isScrollTicking = false;
+    }
 
-window.addEventListener('scroll', () => {
-    let current = '';
-    
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
-        
-        if (window.pageYOffset >= sectionTop - 200) {
-            current = section.getAttribute('id');
+    window.addEventListener('scroll', () => {
+        if (!isScrollTicking) {
+            window.requestAnimationFrame(handleScrollUpdates);
+            isScrollTicking = true;
         }
-    });
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        if (link.getAttribute('href').slice(1) === current) {
-            link.classList.add('active');
-        }
-    });
-});
+    }, { passive: true });
 
-// Counter Animation
-function animateCounter(element) {
-    const target = parseInt(element.getAttribute('data-target'));
-    const duration = 2000;
-    const step = target / (duration / 16);
-    let current = 0;
-    
-    const timer = setInterval(() => {
-        current += step;
-        if (current >= target) {
-            element.textContent = target;
-            clearInterval(timer);
-        } else {
-            element.textContent = Math.floor(current);
-        }
-    }, 16);
-}
-
-// Intersection Observer for Animations
-const observerOptions = {
-    threshold: 0.2,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            
-            // Animate counters
-            if (entry.target.classList.contains('stat-value') && entry.target.getAttribute('data-target')) {
-                animateCounter(entry.target);
-            }
-            
-            // Animate skill bars
-            if (entry.target.classList.contains('skill-fill')) {
-                entry.target.style.width = entry.target.style.getPropertyValue('--skill');
-            }
-            
-            // Animate usage bars
-            if (entry.target.classList.contains('usage-bar')) {
-                const fill = entry.target.querySelector('::after');
-                if (fill) {
-                    fill.style.width = entry.target.style.getPropertyValue('--usage');
-                }
-            }
-        }
-    });
-}, observerOptions);
-
-// Observe elements
-document.addEventListener('DOMContentLoaded', () => {
-    // Fade in elements
-    document.querySelectorAll('.project-card, .tool-card, .stat-card').forEach(el => {
-        el.classList.add('fade-in');
-        observer.observe(el);
-    });
-    
-    // Observe stat values
-    document.querySelectorAll('.stat-value[data-target]').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // Observe skill bars
-    document.querySelectorAll('.skill-item').forEach(el => {
-        observer.observe(el);
-    });
-    
-    // Observe tool cards
-    document.querySelectorAll('.tool-card').forEach(el => {
-        observer.observe(el);
-    });
-});
-
-// Project Card Hover Effect
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mouseenter', function() {
-        this.style.zIndex = '10';
-    });
-    
-    card.addEventListener('mouseleave', function() {
-        this.style.zIndex = '1';
-    });
-});
-
-// Tool Card Click Effect
-document.querySelectorAll('.tool-card').forEach(card => {
-    card.addEventListener('click', function() {
-        // Add pulse effect
-        this.style.animation = 'none';
-        setTimeout(() => {
-            this.style.animation = '';
-        }, 10);
-    });
-});
-
-// Parallax Effect for Hero
-let ticking = false;
-
-function updateParallax() {
-    const scrolled = window.pageYOffset;
-    const heroSection = document.querySelector('.hero-section');
-    
-    if (heroSection) {
-        const spheres = heroSection.querySelectorAll('.gradient-sphere');
-        spheres.forEach((sphere, index) => {
-            const speed = 0.5 + (index * 0.1);
-            sphere.style.transform = `translateY(${scrolled * speed}px)`;
+    // Back to top button action
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     }
-    
-    ticking = false;
-}
 
-window.addEventListener('scroll', () => {
-    if (!ticking) {
-        window.requestAnimationFrame(updateParallax);
-        ticking = true;
+    // -------------------------------------------------------------------------
+    // 3. Section Spy via IntersectionObserver (Zero Layout Thrashing)
+    // -------------------------------------------------------------------------
+    const sectionElements = document.querySelectorAll('section[id]');
+    const navLinkElements = document.querySelectorAll('.nav-link');
+
+    const spyObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const activeId = entry.target.getAttribute('id');
+                navLinkElements.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === `#${activeId}`) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+            }
+        });
+    }, {
+        rootMargin: '-20% 0px -65% 0px',
+        threshold: 0
+    });
+
+    sectionElements.forEach(sec => spyObserver.observe(sec));
+
+    // -------------------------------------------------------------------------
+    // 4. Project Category Filter Switcher
+    // -------------------------------------------------------------------------
+    const filterContainer = document.getElementById('projectFilter');
+    const projectCards = document.querySelectorAll('.project-card');
+
+    if (filterContainer) {
+        const filterBtns = filterContainer.querySelectorAll('.filter-btn');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Toggle active button
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                const selectedCategory = btn.getAttribute('data-filter');
+
+                projectCards.forEach(card => {
+                    const cardCat = card.getAttribute('data-category');
+
+                    if (selectedCategory === 'all' || cardCat === selectedCategory) {
+                        card.style.display = 'flex';
+                        // Re-trigger visual entry
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, 20);
+                    } else {
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateY(12px)';
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
     }
-});
 
-// Scroll Indicator Hide on Scroll
-const scrollIndicator = document.querySelector('.scroll-indicator');
-if (scrollIndicator) {
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 100) {
-            scrollIndicator.style.opacity = '0';
-        } else {
-            scrollIndicator.style.opacity = '1';
+    // -------------------------------------------------------------------------
+    // 5. High-Precision Cubic Ease-Out Counter Animation
+    // -------------------------------------------------------------------------
+    function animateCounter(element) {
+        const target = parseInt(element.getAttribute('data-target'), 10);
+        if (isNaN(target)) return;
+
+        const duration = 1600; // ms
+        const startTime = performance.now();
+
+        function step(now) {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Cubic ease-out: 1 - (1 - t)^3
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(easeOut * target);
+
+            element.textContent = current;
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                element.textContent = target;
+            }
         }
-    });
-}
 
-// Add hover effect to buttons
-document.querySelectorAll('.btn-primary, .btn-secondary').forEach(btn => {
-    btn.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-2px)';
-    });
-    
-    btn.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0)';
-    });
-});
-
-// Project Link Arrow Animation
-document.querySelectorAll('.project-link').forEach(link => {
-    link.addEventListener('mouseenter', function() {
-        const arrow = this.querySelector('svg');
-        if (arrow) {
-            arrow.style.transform = 'translateX(5px)';
-        }
-    });
-    
-    link.addEventListener('mouseleave', function() {
-        const arrow = this.querySelector('svg');
-        if (arrow) {
-            arrow.style.transform = 'translateX(0)';
-        }
-    });
-});
-
-// Console Message
-console.log('%c🚀 taozheyin.dev', 'font-size: 24px; font-weight: bold; background: linear-gradient(135deg, #6366f1, #8b5cf6); -webkit-background-clip: text; color: transparent;');
-console.log('%c探索 AI 驱动的开发未来', 'font-size: 14px; color: #64748b;');
-console.log('%cGitHub: https://github.com/taozheyin-dev', 'font-size: 12px; color: #6366f1;');
-
-// Add smooth reveal for sections
-const revealSections = document.querySelectorAll('section');
-const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, {
-    threshold: 0.1
-});
-
-revealSections.forEach(section => {
-    section.style.opacity = '0';
-    section.style.transform = 'translateY(30px)';
-    section.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
-    revealObserver.observe(section);
-});
-
-// Easter egg: Konami code
-let konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-let konamiIndex = 0;
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === konamiCode[konamiIndex]) {
-        konamiIndex++;
-        if (konamiIndex === konamiCode.length) {
-            activateEasterEgg();
-            konamiIndex = 0;
-        }
-    } else {
-        konamiIndex = 0;
+        requestAnimationFrame(step);
     }
-});
 
-function activateEasterEgg() {
-    console.log('%c🎉 You found the easter egg!', 'font-size: 20px; color: #ec4899;');
-    document.body.style.animation = 'rainbow 2s ease infinite';
-    setTimeout(() => {
-        document.body.style.animation = '';
-    }, 5000);
-}
+    // -------------------------------------------------------------------------
+    // 6. Viewport Reveal & Unobserve Observer (Fade-In Entry)
+    // -------------------------------------------------------------------------
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
 
-// Add rainbow animation
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes rainbow {
-        0% { filter: hue-rotate(0deg); }
-        100% { filter: hue-rotate(360deg); }
+                // If element has counter
+                const counterChild = entry.target.querySelector('.stat-value[data-target]');
+                if (counterChild) {
+                    animateCounter(counterChild);
+                } else if (entry.target.classList.contains('stat-value') && entry.target.hasAttribute('data-target')) {
+                    animateCounter(entry.target);
+                }
+
+                // If element has intensity/skill bar
+                const bar = entry.target.querySelector('.intensity-bar');
+                if (bar) {
+                    bar.style.width = bar.style.getPropertyValue('--level') || '75%';
+                }
+
+                // Free memory by unobserving revealed elements
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.fade-in-entry, .hero-stat-card, .tool-card, .project-card, .achievement-card, .insight-card, .tech-radar-category').forEach(el => {
+        el.classList.add('fade-in-entry');
+        revealObserver.observe(el);
+    });
+
+    // -------------------------------------------------------------------------
+    // 7. Mobile Navigation Drawer & Outside Click Handling
+    // -------------------------------------------------------------------------
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.getElementById('navMenu');
+
+    if (menuToggle && navMenu) {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = navMenu.classList.toggle('active');
+            menuToggle.classList.toggle('active', isOpen);
+            document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+
+        // Close on link click
+        navLinkElements.forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Close on outside click
+        document.addEventListener('click', (e) => {
+            if (navMenu.classList.contains('active') && !navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
+                navMenu.classList.remove('active');
+                menuToggle.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        });
     }
-`;
-document.head.appendChild(style);
 
-// Performance optimization: Throttle scroll events
-function throttle(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
+    // -------------------------------------------------------------------------
+    // 8. Smooth Scrolling with Fixed Header Offset
+    // -------------------------------------------------------------------------
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
 
-// Apply throttle to scroll-heavy operations
-window.addEventListener('scroll', throttle(() => {
-    // Additional scroll operations here
-}, 100));
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                e.preventDefault();
+                const headerOffset = 80;
+                const elementPosition = targetElement.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // -------------------------------------------------------------------------
+    // 9. Console Technical Branding
+    // -------------------------------------------------------------------------
+    console.log(
+        '%c🚀 taozheyin.dev %c| AI Systems & Multi-Agent Architecture',
+        'background: #6366f1; color: white; padding: 4px 8px; border-radius: 4px 0 0 4px; font-weight: bold;',
+        'background: #111622; color: #94a3b8; padding: 4px 8px; border-radius: 0 4px 4px 0;'
+    );
+    console.log('GitHub: https://github.com/taozheyin-dev');
+});
