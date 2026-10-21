@@ -34,8 +34,9 @@ def main():
             assert page.locator('body.theme-craft').count() == 1
             assert page.locator('[data-open-views], #views-dialog').count() == 0
             assert page.locator('h1').count() == 1
-            assert page.locator('.project-card').count() == 6
-            assert page.locator('.project-detail').count() == 6
+            assert page.locator('.project-card').count() == 3
+            assert page.locator('.project-detail').count() == 3
+            assert page.locator('#learning .learning-item').count() == 4
             ids = page.locator('[id]').evaluate_all('(els) => els.map(e => e.id)')
             assert len(ids) == len(set(ids)), f'Duplicate id: {name}'
             broken_links = page.locator('a[href^="#"]').evaluate_all('(els) => els.map(e=>e.getAttribute("href").slice(1)).filter(id=>id && !document.getElementById(id))')
@@ -47,16 +48,19 @@ def main():
             page.screenshot(path=str(OUT / f'{name}-desktop.png'))
             page.locator('#projects').scroll_into_view_if_needed()
             page.screenshot(path=str(OUT / f'{name}-projects.png'))
-            for key, count in [('ai', 3), ('api', 3), ('dev', 2), ('edge', 2), ('all', 6)]:
+            for key, count in [('api', 2), ('web', 1), ('all', 3)]:
                 page.locator(f'[data-filter="{key}"]').click()
                 assert page.locator('.project-card:visible').count() == count, (name, key)
                 assert page.locator(f'[data-filter="{key}"]').get_attribute('aria-pressed') == 'true'
-            for project_id in ['codebuddy', 'zcode', 'nim', 'mail', 'github', 'navigation']:
+            for project_id in ['codebuddy', 'nim', 'navigation']:
                 trigger = page.locator(f'[data-project="{project_id}"]')
                 trigger.click()
                 assert page.locator('#project-dialog').is_visible()
                 assert page.locator('#project-dialog h3').all_text_contents() == ['要解决的问题', '我的贡献', '实现结果', '工程取舍']
                 assert page.locator('#project-dialog li').count() == 3
+                source_links = page.locator('#project-dialog .project-links a')
+                assert source_links.count() >= 2
+                assert all(source_links.nth(i).get_attribute('href').startswith('https://') for i in range(source_links.count()))
                 if project_id == 'codebuddy':
                     page.screenshot(path=str(OUT / f'{name}-detail.png'))
                     page.keyboard.press('Shift+Tab')
@@ -98,7 +102,7 @@ def main():
                     page.screenshot(path=str(OUT / f'{name}-mobile-detail.png'))
                     assert page.locator('#project-dialog').evaluate('(e) => e.scrollWidth <= e.clientWidth + 1')
                     page.locator('#project-dialog [data-close-dialog]').click()
-            report['interactions'].append(f'{name}: Craft entry, filters, six details, focus restoration, protocol tabs, mobile menu passed')
+            report['interactions'].append(f'{name}: Craft entry, filters, three project details with source links, learning section, focus restoration, protocol tabs, mobile menu passed')
             print(report['interactions'][-1], flush=True)
         page.goto(f'{BASE}/#nim-detail', wait_until='networkidle')
         assert page.locator('#project-dialog').is_visible()

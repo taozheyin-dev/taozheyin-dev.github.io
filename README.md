@@ -25,7 +25,7 @@ python scripts/build.py
 python scripts/fonts.py
 ```
 
-- `content.json`：六个项目的摘要与详细记录、工具体系、工作方法。
+- `content.json`：三个精选项目及其来源链接、四项学习与实践经历、工具体系和工作方法。
 - `templates/craft.html`：唯一维护的页面模板。
 - `scripts/build.py`：生成内容一致的 `index.html` 和 `craft.html`，不改动本地归档。
 - `craft.css`：Craft 的布局与视觉样式。
@@ -60,10 +60,11 @@ python scripts/fonts.py
 python scripts/verify.py
 ```
 
-验证需要 Python Playwright 与 Chromium。脚本检查首页和 Craft 入口在 320、390、768、1024 和 1440px 宽度下的页面溢出、筛选、六个详情弹窗、焦点返回、手机菜单、协议工作台、直接详情链接，以及无 JavaScript 的阅读回退。
+验证需要 Python Playwright 与 Chromium。脚本检查首页和 Craft 入口在 320、390、768、1024 和 1440px 宽度下的页面溢出、筛选、三个详情弹窗及其来源链接、学习区块、焦点返回、手机菜单、协议工作台、直接详情链接，以及无 JavaScript 的阅读回退。
 截图和报告保存在 `.build/review/`。
 
 GitHub Pages 从 `main` 分支根目录发布。提交时只包含 Craft 及其内容、源码、资源和构建脚本；旧版文件已从 Git 跟踪中移除，本地归档仍保留。
 
-内容沿用既有项目记录，已移除缺少出处的规模与性能数字。
+精选项目依据公开仓库与 PR 整理，详情中保留个人角色和来源链接。CodeBuddy2API 展示已合并的每日活动流程贡献；NIM Proxy 展示个人 Fork 的同模型竞速工作，明确其尚未合入原项目上游；AI 服务导航链接到实际的 GitHub Pages 站点。
+AI Harness 工程、模型环境配置、边缘邮箱与 Git 多账号配置放在学习与实践区块，按学习经历呈现。
 新增可公开的项目链接、测试结果或性能指标时，应一并记录对应来源与适用版本。

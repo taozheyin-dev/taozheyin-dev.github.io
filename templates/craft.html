@@ -76,29 +76,28 @@
     </section>
 
     <section id="projects" class="work-section" aria-labelledby="projects-title">
-      <div class="section-heading"><div><span class="section-eyebrow">01 / 工程实践</span><h2 id="projects-title">从具体问题，到可用工具。</h2></div><p>AI 工作流、协议接入与开发体验。<br>在实际场景里，打磨每一个细节。</p></div>
+      <div class="section-heading"><div><span class="section-eyebrow">01 / 项目实践</span><h2 id="projects-title">从具体问题，到可用工具。</h2></div><p>从开源贡献，到持续维护的网站。<br>查看本人工作、实现思路与公开记录。</p></div>
       <div class="project-filters" role="group" aria-label="按项目方向筛选">
         <button type="button" class="is-active" data-filter="all" aria-pressed="true">全部作品</button>
-        <button type="button" data-filter="ai" aria-pressed="false">AI 工具</button>
         <button type="button" data-filter="api" aria-pressed="false">API 与服务</button>
-        <button type="button" data-filter="dev" aria-pressed="false">开发环境</button>
-        <button type="button" data-filter="edge" aria-pressed="false">边缘服务</button>
+        <button type="button" data-filter="web" aria-pressed="false">网站开发</button>
       </div>
       <div class="project-grid" data-project-list>{{projects}}</div>
       <p class="projects-footnote"><span aria-hidden="true">↗</span> 打开任一项目，查看问题背景、实现方式与技术取舍。</p>
     </section>
 
+    <section id="learning" class="learning-section" aria-labelledby="learning-title">
+      <div class="section-heading"><div><span class="section-eyebrow">02 / 学习与实践</span><h2 id="learning-title">在实践中，持续学习。</h2></div><p>AI 辅助学习、个人环境与部署配置。<br>记录正在理解和持续打磨的方向。</p></div>
+      {{learning}}
+    </section>
+
     <section id="tools" class="tools-section" aria-labelledby="tools-title">
-      <div class="section-heading"><div><span class="section-eyebrow">02 / 工具与环境</span><h2 id="tools-title">顺手的工具，清楚的分工。</h2></div><p>工具服务于问题。<br>让工作流保持轻巧，让系统便于维护。</p></div>
+      <div class="section-heading"><div><span class="section-eyebrow">03 / 工具与环境</span><h2 id="tools-title">顺手的工具，清楚的分工。</h2></div><p>工具服务于问题。<br>让工作流保持轻巧，让系统便于维护。</p></div>
       {{tools}}
-      <aside class="learning-note" aria-labelledby="learning-title">
-        <div><span class="section-eyebrow">AI 辅助学习</span><h3 id="learning-title">AI Harness 工程</h3></div>
-        <p>借助 AI 学习 AI Harness 工程，逐步理解如何组织模型的上下文、连接工具，并通过反馈与验证改进工作流程。</p>
-      </aside>
     </section>
 
     <section id="approach" class="approach-section" aria-labelledby="approach-title">
-      <div class="section-heading"><div><span class="section-eyebrow">03 / 工作方法</span><h2 id="approach-title">让工程细节，经得起使用。</h2></div><p>从接口边界到日常体验。<br>让每一步都有明确的理由。</p></div>
+      <div class="section-heading"><div><span class="section-eyebrow">04 / 工作方法</span><h2 id="approach-title">让工程细节，经得起使用。</h2></div><p>从接口边界到日常体验。<br>让每一步都有明确的理由。</p></div>
       {{principles}}
       <div class="craft-closing"><span class="closing-symbol" aria-hidden="true">↳</span><p>把复杂留在实现里，<br><strong>把清楚交给使用者。</strong></p><a href="#projects">回到项目 <span aria-hidden="true">↑</span></a></div>
     </section>

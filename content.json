@@ -1,84 +1,199 @@
 {
   "projects": [
     {
-      "id": "codebuddy", "title": "CodeBuddy2API", "subtitle": "协议转换网关", "category": "API 与服务", "filters": ["api", "ai"], "visual": "gateway",
-      "summary": "连接不同的 API 协议，把接入差异收敛在网关内部。",
-      "result": "统一调用入口，保留流式响应体验。",
-      "tags": ["协议适配", "流式响应", "版本迁移"],
-      "problem": "不同工具使用 Chat Completions、Responses 和 Messages 等接口。协议、事件格式与版本差异，让接入和维护变得重复。",
-      "contribution": ["参与多协议适配，把请求参数和响应事件的转换集中在网关边界。", "调整流式处理链路，让响应片段能够边接收、边解析、边输出。", "处理跨版本迁移与兼容问题，维护已有调用方式。"],
-      "outcome": "调用侧可以沿用熟悉的接口，适配工作集中在网关中；后续升级也有了更明确的检查边界。",
-      "tradeoff": "统一协议不能抹平所有差异。工具调用、错误事件和流式结束语义仍需分别检查，避免表面兼容、实际行为不同。",
-      "nodes": ["调用工具", "协议适配", "模型服务"]
+      "id": "codebuddy",
+      "title": "CodeBuddy2API",
+      "subtitle": "每日活动流程与可靠性",
+      "category": "API 与服务",
+      "filters": [
+        "api"
+      ],
+      "visual": "activity",
+      "role": "开源贡献 · 已合并至上游",
+      "summary": "为国际版 WorkBuddy 的每日活动补齐会话调度、状态核验与失败处理。",
+      "result": "贡献通过 PR #52 合入上游。",
+      "tags": [
+        "Python",
+        "ACP",
+        "状态管理"
+      ],
+      "context": "项目将 CodeBuddy / WorkBuddy 订阅接入 OpenAI 兼容接口。我的贡献集中在国际版 WorkBuddy 的每日活动流程。",
+      "problem": "活动流程涉及会话连接、异步准备和每日执行状态。发送状态不清楚时，重试可能造成重复执行；时区或调度处理不当，也会导致任务遗漏或集中触发。",
+      "contribution": [
+        "实现 ACP 会话客户端与每日活动调度，按账号和本地日期记录执行预留，功能默认关闭、按需启用。",
+        "区分未发送、已发送和待确认状态，保留未发送任务的重试机会，避免重放已发送但未确认的请求。",
+        "补充回归测试，修复日期边界、账号分时调度、记录清理与异步沙箱准备等问题。"
+      ],
+      "outcome": "PR #52 于 2026 年 10 月 4 日合并至上游。PR 正文记录了离线回归测试、真实账号验证及相关环境限制，可直接查看原始验证材料。",
+      "tradeoff": "协议调用返回不代表业务任务已经完成，因此需要从控制台读回完成状态。对已发送但未确认的请求停止自动重放，会保留待确认状态，也降低了重复执行的风险。",
+      "links": [
+        {
+          "label": "上游项目",
+          "url": "https://github.com/maiphucgiang/codebuddy2api"
+        },
+        {
+          "label": "贡献 PR #52 · 已合并",
+          "url": "https://github.com/maiphucgiang/codebuddy2api/pull/52"
+        },
+        {
+          "label": "我的 Fork",
+          "url": "https://github.com/ytzzjx/codebuddy2api"
+        }
+      ]
     },
     {
-      "id": "zcode", "title": "ZCode", "subtitle": "多模型开发环境", "category": "开发环境", "filters": ["dev", "ai"], "visual": "config",
-      "summary": "整理模型接入、参数配置与技能，让开发环境更容易维护。",
-      "result": "把分散配置整理为可追踪的工作环境。",
-      "tags": ["配置治理", "模型路由", "技能整理"],
-      "problem": "模型与渠道逐渐增加后，上下文长度、输出限制和路由规则容易不一致。社区技能也需要筛选，才能适应日常任务。",
-      "contribution": ["整理 Provider 和模型配置，逐项校准上下文、输出限制与思考档位。", "梳理路由与回退关系，处理循环转发的配置风险。", "筛选、去重和整理技能，把配置变更纳入版本管理。"],
-      "outcome": "环境的模型能力、路由关系和技能用途更清楚，定位配置问题时有了可以对照的记录。",
-      "tradeoff": "更多接入意味着更多维护工作。优先保留用途清楚、能够持续验证的配置，减少无效选项。",
-      "nodes": ["任务", "配置与路由", "模型 / 技能"]
+      "id": "nim",
+      "title": "NIM Proxy",
+      "subtitle": "同模型请求竞速与部署",
+      "category": "API 与服务",
+      "filters": [
+        "api"
+      ],
+      "visual": "race",
+      "role": "个人 Fork 开发 · Fork 内 PR 评审中",
+      "summary": "在个人 Fork 中开发同模型请求竞速，处理响应裁决、取消和共享限速。",
+      "result": "竞速与部署改动整理为 Fork 内 PR #1。",
+      "tags": [
+        "Rust",
+        "同模型竞速",
+        "请求生命周期"
+      ],
+      "context": "上游是 Rust 编写的 OpenAI 兼容代理，提供限速与多密钥调度。我在个人 Fork 中开发同模型请求竞速及相关部署流程，改动尚未合入原项目上游。",
+      "problem": "冗余请求可能降低等待时间，也会增加上游消耗。多个尝试并行时，需要保持用户指定的模型、共享限速约束，并明确响应归属和取消边界。",
+      "contribution": [
+        "为同一模型的相同请求增加立即或延迟的冗余尝试，选择首个有效响应，并取消落败尝试。",
+        "修复竞速中的密钥授权、记账和响应边界问题，让每次发送仍经过共享限速机制。",
+        "整理普通流量与可选竞速流量的双通道部署、运行手册和验证记录。"
+      ],
+      "outcome": "实现与部署记录集中在个人 Fork 的 PR #1，当前处于评审阶段。PR 包含测试、合成负载和真实路由验证记录，也列出了已知限制；真实环境的加速效果仍需进一步测量。",
+      "tradeoff": "只对同一模型发送冗余请求，保留用户选择的模型语义。代价是额外的请求消耗，需要同时控制限速、延迟触发、取消与清理，不能只关注最早返回。",
+      "links": [
+        {
+          "label": "上游项目",
+          "url": "https://github.com/miztertea/nim-proxy"
+        },
+        {
+          "label": "我的 Fork",
+          "url": "https://github.com/taozheyin-dev/nim-proxy"
+        },
+        {
+          "label": "Fork 内 PR #1",
+          "url": "https://github.com/taozheyin-dev/nim-proxy/pull/1"
+        }
+      ]
     },
     {
-      "id": "nim", "title": "NIM Proxy", "subtitle": "并发代理与稳定性", "category": "API 与服务", "filters": ["api"], "visual": "race",
-      "summary": "围绕请求竞速、凭证轮转和异常处理，维护代理链路。",
-      "result": "修复竞态问题，梳理并发请求的生命周期。",
-      "tags": ["并发控制", "故障处理", "回归测试"],
-      "problem": "并发竞速可以改善等待体验，但多个协程同时返回时，状态清理和响应归属容易出现竞争。凭证状态也影响请求的稳定性。",
-      "contribution": ["定位模型竞速流程中的竞态问题，修复并发状态处理。", "维护凭证池与健康轮转逻辑，整理失败和重试的处理路径。", "运行相关回归测试，并补齐日常使用中的中文交互。"],
-      "outcome": "并发响应与失败处理有了更明确的归属，相关修复经过回归验证。",
-      "tradeoff": "请求竞速会增加上游消耗，需要同时考虑取消、清理与重试的边界，不能只关注最快的一次返回。",
-      "nodes": ["请求进入", "并发 / 轮转", "响应归并"]
-    },
-    {
-      "id": "mail", "title": "边缘邮箱", "subtitle": "Cloudflare 邮件服务", "category": "边缘服务", "filters": ["edge", "api"], "visual": "mail",
-      "summary": "用 Workers、D1 与 KV 组合邮件接收和查询流程。",
-      "result": "完成边缘部署，按实际用量观察资源消耗。",
-      "tags": ["Workers", "D1", "KV"],
-      "problem": "一个轻量邮件服务需要接收、保存和查询消息，同时控制部署与运维成本。",
-      "contribution": ["组合 Cloudflare Workers、D1 和 KV，完成邮件接收与查询链路。", "整理部署配置，处理实际使用中的邮件接收与域名配置问题。", "观察数据库与边缘资源用量，控制日常运行成本。"],
-      "outcome": "邮件处理流程落在可独立部署的边缘服务上，无需维护常驻服务器。",
-      "tradeoff": "Serverless 降低了日常运维负担，也引入平台配额与运行时限制。存储和查询方式需要围绕这些约束设计。",
-      "nodes": ["邮件接收", "Worker", "D1 / KV"]
-    },
-    {
-      "id": "github", "title": "GitHub 账号管理器", "subtitle": "开发身份与凭证隔离", "category": "开发环境", "filters": ["dev"], "visual": "identity",
-      "summary": "按工作目录组织 Git 身份，让不同账号各归其位。",
-      "result": "减少手动切换，明确目录与身份的对应关系。",
-      "tags": ["Git includeIf", "SSH", "Device Code"],
-      "problem": "同一台机器上的多个 GitHub 身份，需要正确使用提交信息和访问凭证。手动切换容易遗漏，也很难长期保持一致。",
-      "contribution": ["利用 Git includeIf 按目录选择提交身份，配合 SSH 配置隔离访问凭证。", "集成 OAuth Device Code 授权流程，整理终端侧的账号操作。", "通过相关测试检查账号切换与凭证管理的关键路径。"],
-      "outcome": "工作目录与 Git 身份建立对应关系，日常操作减少了对手动切换的依赖。",
-      "tradeoff": "提交身份与仓库访问权限是两条独立链路，需要分别验证，不能仅凭一次推送成功判断配置完整。",
-      "nodes": ["工作目录", "身份规则", "Git / SSH"]
-    },
-    {
-      "id": "navigation", "title": "AI 服务导航", "subtitle": "轻量资源入口", "category": "AI 工具", "filters": ["ai", "edge"], "visual": "nav",
-      "summary": "为 AI 服务整理清晰的分类与入口，让资源更容易找到。",
-      "result": "以原生静态页面交付，部署到边缘节点。",
-      "tags": ["HTML / CSS", "JavaScript", "Pages"],
-      "problem": "服务和资源分散在不同入口。一个日常可用的导航页，需要清楚的分类、直接的访问路径与轻量的加载体验。",
-      "contribution": ["整理服务分类和资源入口，使用原生 HTML、CSS 与 JavaScript 实现。", "完成静态站点部署，把维护范围控制在内容与交互本身。", "持续整理页面结构，让资源查找路径更直接。"],
-      "outcome": "形成一个无需应用服务器的资源导航入口，内容更新和页面维护更直接。",
-      "tradeoff": "导航的长期价值来自资源质量和维护。页面保持轻量，把注意力留给分类与链接的有效性。",
-      "nodes": ["资源入口", "分类", "服务链接"]
+      "id": "navigation",
+      "title": "AI 服务导航",
+      "subtitle": "公益 AI 中转站目录",
+      "category": "网站开发",
+      "filters": [
+        "web"
+      ],
+      "visual": "nav",
+      "role": "个人网站 · 内容与工程维护",
+      "summary": "整理公益 AI 中转站的入口、注册方式和服务信息，持续维护目录。",
+      "result": "部署于 GitHub Pages，支持中英文浏览。",
+      "tags": [
+        "HTML / CSS / JS",
+        "内容维护",
+        "GitHub Pages"
+      ],
+      "context": "个人维护的公益 AI 中转站导航网站，使用原生 HTML、CSS 与 JavaScript 实现，并通过 GitHub Pages 发布。",
+      "problem": "不同站点的注册方式、奖励规则和可用模型分散在各处，而且会持续变化。导航需要清楚呈现这些信息，并及时处理变更与失效入口。",
+      "contribution": [
+        "整理站点分类、注册方式与服务说明，持续收录、修订条目并归档失效站点。",
+        "实现中英文切换，调整英文内容和统计脚本的加载时机，减少首屏加载的负担。",
+        "维护 GitHub Pages 部署，以及图标、站点元数据和一致性检查等构建脚本。"
+      ],
+      "outcome": "站点可公开访问，目录与页面持续维护。仓库保留了内容更新、语言切换与加载方式调整的提交记录。",
+      "tradeoff": "静态页面让部署保持简单，但目录有效性、图标与元数据需要持续维护。英文内容按需加载减少了首屏请求，也需要处理首次切换时的等待。",
+      "links": [
+        {
+          "label": "访问网站",
+          "url": "https://ytzzjx.github.io/"
+        },
+        {
+          "label": "项目仓库",
+          "url": "https://github.com/ytzzjx/ytzzjx.github.io"
+        }
+      ]
     }
   ],
   "tools": [
-    {"name":"Claude Code", "role":"复杂任务与代码推敲", "description":"围绕架构、实现与调试展开工作，再用实际运行检查判断。"},
-    {"name":"Codex", "role":"实现与迭代", "description":"把需求落到代码和界面，在本地验证行为，继续修正细节。"},
-    {"name":"ZCode / OpenCode", "role":"模型与开发环境", "description":"组织模型接入、项目上下文和工作流程，维护日常开发环境。"},
-    {"name":"Kimi Code", "role":"长文阅读与审查", "description":"辅助梳理文档和代码上下文，再回到原始材料核对关键细节。"},
-    {"name":"CodeBuddy", "role":"协议与工具集成", "description":"在真实接入过程中理解接口、流式事件和不同工具的行为差异。"},
-    {"name":"Hermes / Pi", "role":"工作流探索", "description":"尝试不同的 Agent 使用方式，按具体任务判断适用边界。"}
+    {
+      "name": "Claude Code",
+      "role": "复杂任务与代码推敲",
+      "description": "围绕架构、实现与调试展开工作，再用实际运行检查判断。"
+    },
+    {
+      "name": "Codex",
+      "role": "实现与迭代",
+      "description": "把需求落到代码和界面，在本地验证行为，继续修正细节。"
+    },
+    {
+      "name": "ZCode / OpenCode",
+      "role": "模型与开发环境",
+      "description": "组织模型接入、项目上下文和工作流程，维护日常开发环境。"
+    },
+    {
+      "name": "Kimi Code",
+      "role": "长文阅读与审查",
+      "description": "辅助梳理文档和代码上下文，再回到原始材料核对关键细节。"
+    },
+    {
+      "name": "CodeBuddy",
+      "role": "协议与工具集成",
+      "description": "在真实接入过程中理解接口、流式事件和不同工具的行为差异。"
+    },
+    {
+      "name": "Hermes / Pi",
+      "role": "工作流探索",
+      "description": "尝试不同的 Agent 使用方式，按具体任务判断适用边界。"
+    }
   ],
   "principles": [
-    {"title":"先把边界说清楚", "description":"先明确输入、输出和失败方式，再写适配。不同协议的差异应有固定的处理位置。"},
-    {"title":"用证据缩小问题", "description":"从日志和实际载荷出发，构造能复现问题的最小场景，每次只改变一个关键变量。"},
-    {"title":"让配置可以追踪", "description":"把模型、路由与环境配置纳入版本管理，保留变更原因，也为回退留下路径。"},
-    {"title":"交付包含验证", "description":"根据改动检查关键行为，记录限制和使用方式，让下一次维护有据可依。"}
+    {
+      "title": "先把边界说清楚",
+      "description": "先明确输入、输出和失败方式，再写适配。不同协议的差异应有固定的处理位置。"
+    },
+    {
+      "title": "用证据缩小问题",
+      "description": "从日志和实际载荷出发，构造能复现问题的最小场景，每次只改变一个关键变量。"
+    },
+    {
+      "title": "让配置可以追踪",
+      "description": "把模型、路由与环境配置纳入版本管理，保留变更原因，也为回退留下路径。"
+    },
+    {
+      "title": "交付包含验证",
+      "description": "根据改动检查关键行为，记录限制和使用方式，让下一次维护有据可依。"
+    }
+  ],
+  "learning": [
+    {
+      "id": "harness",
+      "title": "AI Harness 工程",
+      "kind": "AI 辅助学习",
+      "description": "借助 AI 学习 AI Harness 工程，逐步理解如何组织模型的上下文、连接工具，并通过反馈与验证改进工作流程。"
+    },
+    {
+      "id": "zcode",
+      "title": "多模型开发环境",
+      "kind": "自用环境配置",
+      "description": "整理自用的 ZCode / OpenCode 模型与 Provider 配置，关注上下文限制、路由关系和技能用途，让日常开发环境更便于维护。"
+    },
+    {
+      "id": "mail",
+      "title": "Cloudflare 边缘邮箱",
+      "kind": "部署实践",
+      "description": "围绕 Workers、D1 与 KV 的邮件接收、存储和查询流程，学习边缘服务的部署配置、资源用量与平台限制。"
+    },
+    {
+      "id": "github",
+      "title": "Git 多账号配置",
+      "kind": "个人配置实践",
+      "description": "学习 Git includeIf 与 SSH 配置，探索按工作目录区分提交身份与访问凭证的方法，并分别检查两条链路。"
+    }
   ]
 }
