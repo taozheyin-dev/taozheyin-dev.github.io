@@ -1,0 +1,25 @@
+/* Reading sizes and touch targets for the maintained Craft portfolio. */
+.theme-craft { --muted: #666b65; }
+.theme-craft .main-nav a { font-size: 13px; }
+.theme-craft .hero-eyebrow, .theme-craft .section-eyebrow { font-size: 12px; }
+.theme-craft .project-filters button { min-height: 44px; font-size: 13px; padding-inline: 14px; }
+.theme-craft .project-tags span { font-size: 11px; }
+.theme-craft .project-grid .project-card .project-category,
+.theme-craft .project-grid .project-card .project-index,
+.theme-craft .project-grid .project-card .project-open { font-size: 12px; }
+.theme-craft .tool-role, .theme-craft .tool-number { font-size: 12px; }
+.theme-craft .tool-description, .theme-craft .principle p { font-size: 14px; line-height: 1.95; }
+.theme-craft .hero-description { font-size: 15px; line-height: 1.95; }
+.theme-craft .project-grid .project-card .project-summary { font-size: 14px; line-height: 1.9; }
+.theme-craft .project-grid .project-card .project-result { font-size: 13px; line-height: 1.85; }
+.theme-craft .footer-inner { font-size: 12px; }
+.theme-craft .project-title { overflow-wrap: anywhere; }
+@media (max-width: 700px) {
+  .theme-craft .header-inner { gap: 12px; }
+  .theme-craft .header-actions { gap: 8px; }
+  .theme-craft .site-header .main-nav { position: absolute; top: 100%; margin: 0; }
+  .theme-craft .hero-description { font-size: 14px; }
+  .theme-craft .tool-list, .theme-craft .principle-list { grid-template-columns: 1fr; }
+  .theme-craft .principle { min-height: 0; }
+  .theme-craft .project-category { position: static; }
+}

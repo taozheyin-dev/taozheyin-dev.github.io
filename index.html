@@ -1,458 +1,217 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Agent 工具实践之旅 | taozheyin-dev</title>
-    <meta name="description" content="深度探索 8 款主流 AI Agent 工具，落地 20+ 实战工程项目。专注于自建 API 网关、多模型环境治理、无服务系统与高可用密钥对冲架构。">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="bento.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>YTZ | 个人技术作品集</title><meta name="description" content="YTZ 的个人技术作品集：记录 AI 工具、API 网关、开发环境和边缘服务中的项目实现与个人贡献。"><link rel="icon" href="assets/favicon.svg" type="image/svg+xml"><link rel="preload" href="assets/fonts/noto-sans-sc.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="shared.css"><script src="portfolio.js" defer></script>
+  <link rel="stylesheet" href="craft.css">
+<link rel="stylesheet" href="polish.css">
 </head>
-<body>
-
-    <!-- Top Style Switcher Float Bar -->
-    <header class="style-switcher-bar">
-        <div class="style-switcher-label">
-            <span>🎨 风格切换:</span>
+<body class="theme-craft">
+  <a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="header-inner">
+      <a class="logo" href="#main" aria-label="YTZ，回到顶部"><span class="logo-mark" aria-hidden="true">↗</span><span class="logo-name">YTZ<span aria-hidden="true">.</span></span></a>
+      <nav class="main-nav" id="main-nav" aria-label="主导航"><a href="#projects">项目实践</a><a href="#tools">工具体系</a><a href="#approach">工作方法</a></nav>
+      <div class="header-actions"><button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">菜单 <span aria-hidden="true">+</span></button></div>
+    </div></header>
+  <main id="main" class="page-shell">
+    <section class="craft-hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <p class="hero-eyebrow"><span class="status-dot" aria-hidden="true"></span> YTZ · 软件工具与工程实践</p>
+          <h1 id="hero-title">让工具协作，<br>让<span>工程落地。</span></h1>
+          <p class="hero-description">专注 AI 工具、API 网关与开发环境。<br>连接不同系统的能力，把复杂流程做成<br class="desktop-break">可靠、清楚、可复用的工具。</p>
+          <div class="hero-actions"><a class="primary-link" href="#projects">探索项目 <span aria-hidden="true">↗</span></a><a class="secondary-link" href="#approach">了解工作方法 <span aria-hidden="true">→</span></a></div>
+          <div class="hero-discipline"><span>接口设计</span><i aria-hidden="true"></i><span>工具开发</span><i aria-hidden="true"></i><span>边缘服务</span></div>
         </div>
-        <nav class="style-links">
-            <a href="classic.html" class="style-pill">🏛️ 原版经典 (Original Classic)</a>
-            <a href="index.html" class="style-pill active">✨ 苹果/Raycast 便当盒 (Bento)</a>
-            <a href="minimal.html" class="style-pill">🌿 极简主义 (Lee Robinson)</a>
-            <a href="craft.html" class="style-pill">⚡ 工艺极客 (Linear / Rauno)</a>
-            <a href="split.html" class="style-pill">📑 经典双栏 (Brittany Chiang)</a>
-            <a href="editorial.html" class="style-pill">📰 科技期刊 (Stripe Editorial)</a>
-        </nav>
-    </header>
 
-    <main class="bento-container">
-        <div class="bento-grid">
+        <div class="workbench" aria-label="API 请求处理流程示意">
+          <div class="bench-header"><div class="bench-window-dots" aria-hidden="true"><i></i><i></i><i></i></div><span>协议工作台</span><span class="bench-caption">工作方式示意</span></div>
+          <div class="bench-route" aria-hidden="true"><span class="route-endpoint">请求</span><span class="route-line"></span><span class="route-core">统一协议</span><span class="route-line"></span><span class="route-endpoint">服务</span></div>
+          <div class="bench-tabs" role="tablist" aria-label="查看请求处理的三个阶段">
+            <button id="demo-tab-0" type="button" role="tab" data-demo-step="0" aria-selected="true" aria-controls="demo-panel-0"><span>01</span> 协议输入</button>
+            <button id="demo-tab-1" type="button" role="tab" data-demo-step="1" aria-selected="false" aria-controls="demo-panel-1" tabindex="-1"><span>02</span> 适配转换</button>
+            <button id="demo-tab-2" type="button" role="tab" data-demo-step="2" aria-selected="false" aria-controls="demo-panel-2" tabindex="-1"><span>03</span> 服务输出</button>
+          </div>
+          <div id="demo-panel-0" class="bench-panel" data-demo-panel="0" role="tabpanel" aria-labelledby="demo-tab-0" tabindex="0">
+            <div class="bench-inspector"><span>标准请求入口</span><span class="protocol-tag">OpenAI 兼容协议</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> request.json<span>JSON</span></div><pre><code><span class="code-method">POST</span> /v1/chat/completions
 
-            <!-- 1. Hero Card (Span 8) -->
-            <div class="bento-card col-8 card-hero">
-                <div class="hero-status-pill">
-                    <span class="status-dot"></span>
-                    <span>AI Systems Integrator & Agentic Workflow Architect</span>
-                </div>
-                <h1 class="hero-heading">
-                    构建智能 · <span class="gradient-text">驱动未来</span>
-                </h1>
-                <p class="hero-intro">
-                    深度探索 <strong>8 款主流 AI Agent</strong> 工具，落地 <strong>20+ 实战工程项目</strong>。
-                    专注于自建 API 网关、多模型环境治理、无服务系统与高可用密钥对冲架构。
-                </p>
-                <div class="hero-actions">
-                    <a href="#projects" class="btn-bento-primary">
-                        <span>探索核心实战</span>
-                        <span>↓</span>
-                    </a>
-                    <a href="https://github.com/taozheyin-dev" class="btn-bento-secondary" target="_blank" rel="noopener noreferrer">
-                        <span>GitHub 主页 ↗</span>
-                    </a>
-                </div>
-            </div>
+{
+  <span class="code-key">"model"</span>: <span class="code-string">"provider/model"</span>,
+  <span class="code-key">"messages"</span>: [{
+    <span class="code-key">"role"</span>: <span class="code-string">"user"</span>,
+    <span class="code-key">"content"</span>: <span class="code-string">"你好"</span>
+  }],
+  <span class="code-key">"stream"</span>: <span class="code-value">true</span>
+}</code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 以统一的入口接收请求，明确参数与协议边界。</p>
+          </div>
+          <div id="demo-panel-1" class="bench-panel" data-demo-panel="1" role="tabpanel" aria-labelledby="demo-tab-1" tabindex="0" hidden>
+            <div class="bench-inspector"><span>协议适配层</span><span class="protocol-tag">请求映射</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> adapter.ts<span>TS</span></div><pre><code><span class="code-comment">// 把差异收敛在适配边界内</span>
+<span class="code-method">const</span> request = {
+  <span class="code-key">model</span>: resolveModel(input.model),
+  <span class="code-key">messages</span>: mapMessages(input.messages),
+  <span class="code-key">stream</span>: input.stream
+};
 
-            <!-- 2. Profile Card (Span 4) -->
-            <div class="bento-card col-4 card-bio">
-                <div class="bio-avatar">TY</div>
-                <h2 class="bio-name">taozheyin</h2>
-                <p class="bio-role">@taozheyin-dev</p>
-                <p class="bio-desc">AI 工具深度实践者，拥抱下一代智能开发范式，坚守工程严谨与真实可信。</p>
-                <div class="bio-social">
-                    <a href="https://github.com/taozheyin-dev" target="_blank" class="social-icon-btn">GitHub</a>
-                    <a href="https://taozheyin-dev.github.io" class="social-icon-btn">Online Site</a>
-                </div>
-            </div>
+<span class="code-method">const</span> response = <span class="code-method">await</span>
+  provider.send(request);
 
-            <!-- 3. Stat Cards (4 x Span 3) -->
-            <div class="bento-card col-3 card-stat">
-                <div class="stat-number">8</div>
-                <div class="stat-label-bento">AI Agent 矩阵</div>
-                <div class="stat-sub-bento">主力深度协同与工作流</div>
-            </div>
+<span class="code-method">return</span> normalize(response);</code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 在明确的边界处理差异，让调用侧保持简单。</p>
+          </div>
+          <div id="demo-panel-2" class="bench-panel" data-demo-panel="2" role="tabpanel" aria-labelledby="demo-tab-2" tabindex="0" hidden>
+            <div class="bench-inspector"><span>流式响应出口</span><span class="protocol-tag">Server-Sent Events</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> response.stream<span>SSE</span></div><pre><code><span class="code-comment"># 响应按统一格式逐步输出</span>
 
-            <div class="bento-card col-3 card-stat">
-                <div class="stat-number">20+</div>
-                <div class="stat-label-bento">工程实战落地</div>
-                <div class="stat-sub-bento">网关 / 边缘服务 / 工具</div>
-            </div>
+<span class="code-key">data:</span> {
+  <span class="code-key">"choices"</span>: [{
+    <span class="code-key">"delta"</span>: {
+      <span class="code-key">"content"</span>: <span class="code-string">"你好"</span>
+    }
+  }]
+}
 
-            <div class="bento-card col-3 card-stat">
-                <div class="stat-number">81/34</div>
-                <div class="stat-label-bento">模型与渠道接入</div>
-                <div class="stat-sub-bento">34 个 Provider 全校准</div>
-            </div>
-
-            <div class="bento-card col-3 card-stat">
-                <div class="stat-number">273</div>
-                <div class="stat-label-bento">生产活跃技能</div>
-                <div class="stat-sub-bento">5 轮严选 (精炼率 82.6%)</div>
-            </div>
-
-            <!-- Section Title: AI Tools -->
-            <div class="bento-section-header">
-                <div class="bento-tag">01 / Arsenal</div>
-                <h2 class="bento-title">AI Agent 工具矩阵</h2>
-            </div>
-
-            <!-- 8 Tools (8 x Span 3) -->
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">🤖</div>
-                    <span class="tool-pill-tag">主架构 & 重构</span>
-                </div>
-                <h3 class="tool-title">Claude Code</h3>
-                <p class="tool-text">主力开发工具。长程逻辑推理极强，在大型架构设计、跨文件重构与测试驱动开发中表现优异。</p>
-                <div class="tool-chips">
-                    <span class="chip">长程推理</span>
-                    <span class="chip">架构重构</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">⚡</div>
-                    <span class="tool-pill-tag">多模型调度中心</span>
-                </div>
-                <h3 class="tool-title">ZCode</h3>
-                <p class="tool-text">调度工作区。配置 34 个 Provider 与 81 个模型，管理思考档位与精炼的 273 项生产级技能。</p>
-                <div class="tool-chips">
-                    <span class="chip">34 渠道</span>
-                    <span class="chip">81 模型</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">💬</div>
-                    <span class="tool-pill-tag">敏捷原型 & 诊断</span>
-                </div>
-                <h3 class="tool-title">ChatGPT (Codex)</h3>
-                <p class="tool-text">单点算法打样与快速故障排查。通过 Responses API 快速演进功能，反应迅捷。</p>
-                <div class="tool-chips">
-                    <span class="chip">Responses API</span>
-                    <span class="chip">快速打样</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">🔮</div>
-                    <span class="tool-pill-tag">长上下文审查</span>
-                </div>
-                <h3 class="tool-title">Kimi Code</h3>
-                <p class="tool-text">代码审查与全量日志分析。依托稳定长上下文窗口，跨文件检查万行代码逻辑。</p>
-                <div class="tool-chips">
-                    <span class="chip">长文本</span>
-                    <span class="chip">代码审查</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">🛠️</div>
-                    <span class="tool-pill-tag">API 网关化</span>
-                </div>
-                <h3 class="tool-title">CodeBuddy</h3>
-                <p class="tool-text">通过自研 codebuddy2api 网关转为标准 API，打通三协议转换，成为日常开发性价比主力。</p>
-                <div class="tool-chips">
-                    <span class="chip">协议转换</span>
-                    <span class="chip">PR #52</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">🌟</div>
-                    <span class="tool-pill-tag">轻量自动化</span>
-                </div>
-                <h3 class="tool-title">Hermes</h3>
-                <p class="tool-text">专精于 CLI 自动化脚本生成、Git 操作辅助与批处理数据格式转换，轻量敏捷。</p>
-                <div class="tool-chips">
-                    <span class="chip">CLI 脚本</span>
-                    <span class="chip">自动化</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">📝</div>
-                    <span class="tool-pill-tag">开源文档</span>
-                </div>
-                <h3 class="tool-title">OpenCode</h3>
-                <p class="tool-text">开源依赖库深度逆向阅读与文档生成引擎，理清调用链与数据流，自动化输出结构化文档。</p>
-                <div class="tool-chips">
-                    <span class="chip">依赖分析</span>
-                    <span class="chip">文档输出</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-3 tool-bento-item">
-                <div class="tool-top-row">
-                    <div class="tool-emoji-box">🎯</div>
-                    <span class="tool-pill-tag">方案头脑风暴</span>
-                </div>
-                <h3 class="tool-title">Pi</h3>
-                <p class="tool-text">技术探索顾问。在技术选型与架构分歧期进行头脑风暴，探索未知边界与设计可行性。</p>
-                <div class="tool-chips">
-                    <span class="chip">思维碰撞</span>
-                    <span class="chip">技术预研</span>
-                </div>
-            </div>
-
-            <!-- Section Title: Projects -->
-            <div class="bento-section-header" id="projects">
-                <div class="bento-tag">02 / Projects</div>
-                <h2 class="bento-title">核心工程实战</h2>
-            </div>
-
-            <!-- 6 Projects (6 x Span 6) -->
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">API 网关 / 开源贡献</span>
-                    <span class="badge-soft badge-green">PR #52 MERGED</span>
-                </div>
-                <h3 class="project-title-bento">CodeBuddy2API 协议转换网关</h3>
-                <p class="project-desc-bento">将闭源订阅生态转换为标准 OpenAI 和 Anthropic 协议，实现双向协议互转与 realtime 流式响应通道，击穿首字延迟（TTFT）瓶颈。</p>
-                <ul class="bento-checklist">
-                    <li>完整实现 Chat、Responses、Messages 三协议互转引擎</li>
-                    <li>流式管道重构：Realtime Chunk 边收边解降低 TTFT</li>
-                    <li>主导跨版本 v1.2.7 → v1.3.6 数据库迁移</li>
-                    <li>提交 PR #52（国际化日常活动原生支持）成功合入上游主干</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">Python</span>
-                        <span class="tag-mini">FastAPI</span>
-                        <span class="tag-mini">Docker</span>
-                    </div>
-                    <a href="https://github.com/taozheyin-dev" target="_blank" class="link-arrow">查看源码 ↗</a>
-                </div>
-            </div>
-
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">配置治理 / 多模型</span>
-                    <span class="badge-soft">81 MODELS</span>
-                </div>
-                <h3 class="project-title-bento">ZCode 工业级多模型协同环境</h3>
-                <p class="project-desc-bento">统一管理 34 个 Provider 与 81 款前沿模型的参数体系，杜绝中转站错误兜底，构建可信的智能体生产环境。</p>
-                <ul class="bento-checklist">
-                    <li>重构上下文窗口、最大输出与思考档位梯度</li>
-                    <li>设计智能防环规则，杜绝中转站循环兜底错误</li>
-                    <li>5 轮筛选治理：从 1572 项冗余技能沉淀为 273 项生产技能</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">ZCode</span>
-                        <span class="tag-mini">Config as Code</span>
-                        <span class="tag-mini">Prompt Matrix</span>
-                    </div>
-                    <span class="tag-mini">环境已就绪</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">高可用代理</span>
-                    <span class="badge-soft badge-green">478 KEYS</span>
-                </div>
-                <h3 class="project-title-bento">NIM Proxy 高性能密钥对冲网关</h3>
-                <p class="project-desc-bento">管理 478 个 API Key 的高可用动态密钥池，支持多账号健康探测与模型竞速对冲调度，完成系统级中文工程汉化。</p>
-                <ul class="bento-checklist">
-                    <li>管理 478 密钥池，33 个账号全量健康探测轮转</li>
-                    <li>修复底层多协程模型竞速 Bug，378 项测试全绿通过</li>
-                    <li>全链路深度工程汉化，默认 zh-CN 友好交互</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">Go</span>
-                        <span class="tag-mini">Docker</span>
-                        <span class="tag-mini">NVIDIA API</span>
-                    </div>
-                    <span class="tag-mini">378/378 Tests Pass</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">Serverless 边缘</span>
-                    <span class="badge-soft badge-green">0.09% 成本</span>
-                </div>
-                <h3 class="project-title-bento">Cloudflare 临时邮箱系统</h3>
-                <p class="project-desc-bento">基于 CF Workers + D1 + KV 构筑的全球分布式边缘临时邮箱服务，突破海外顶级 AI 平台严格的邮箱域名风控限制。</p>
-                <ul class="bento-checklist">
-                    <li>海外 AI 平台注册成功率由 0/17 飙升至 90% (9/10)</li>
-                    <li>修复匿名未授权创建邮箱的越权漏洞</li>
-                    <li>月度 D1 数据库资源配额仅占用 0.09%，近乎零成本</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">CF Workers</span>
-                        <span class="tag-mini">D1 SQLite</span>
-                        <span class="tag-mini">Cloudflare KV</span>
-                    </div>
-                    <span class="tag-mini">稳定运行中</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">身份治理 / CLI</span>
-                    <span class="badge-soft badge-green">70 TESTS PASS</span>
-                </div>
-                <h3 class="project-title-bento">GitHub 多账号凭证隔离管理器</h3>
-                <p class="project-desc-bento">解决单机跨身份开发的自动化凭证管理器。通过 Git includeIf 与 Device Flow 实现 SSH 隔离与终端免网页授权。</p>
-                <ul class="bento-checklist">
-                    <li>统一托管 6 个活跃 GitHub 个人与组织身份</li>
-                    <li>按目录通过 includeIf 秒级切换 SSH 与 Commit 身份</li>
-                    <li>终端集成 OAuth Device Code 授权，无需打开浏览器</li>
-                    <li>70 项 P0 级别单元测试 100% 覆盖通过</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">Node.js</span>
-                        <span class="tag-mini">GitHub API</span>
-                        <span class="tag-mini">OAuth</span>
-                    </div>
-                    <span class="tag-mini">P0 All Green</span>
-                </div>
-            </div>
-
-            <div class="bento-card col-6 card-project">
-                <div class="project-tag-row">
-                    <span class="badge-soft">纯静态 / 边缘部署</span>
-                    <span class="badge-soft">0 DEPENDENCIES</span>
-                </div>
-                <h3 class="project-title-bento">公益 AI 服务聚合导航平台</h3>
-                <p class="project-desc-bento">纯静态高可用 AI 资源导航站，聚焦公益模型与开发者免费额度服务聚合，零框架依赖，实现极致毫秒级首屏访问。</p>
-                <ul class="bento-checklist">
-                    <li>纯原生 HTML5/CSS3/ES6+ 构建，零打包体积膨胀</li>
-                    <li>部署于 Cloudflare Pages 边缘节点加速</li>
-                    <li>数据丰富度与可用性校验全面超越同类商业站点</li>
-                </ul>
-                <div class="bento-card-footer">
-                    <div class="tech-tags-group">
-                        <span class="tag-mini">Vanilla JS</span>
-                        <span class="tag-mini">CF Pages</span>
-                    </div>
-                    <span class="tag-mini">毫秒级秒开</span>
-                </div>
-            </div>
-
-            <!-- Section Title: Achievements -->
-            <div class="bento-section-header">
-                <div class="bento-tag">03 / Proof</div>
-                <h2 class="bento-title">核心量化成果看板</h2>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">1 PR</span>
-                    <span>🎯</span>
-                </div>
-                <h3 class="achieve-name">开源生态主干合并</h3>
-                <p class="achieve-desc">提交 PR #52（国际化日常活动原生支持）成功合并至 codebuddy2api 上游主干代码库。</p>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">5+</span>
-                    <span>🔧</span>
-                </div>
-                <h3 class="achieve-name">自建网关服务集群</h3>
-                <p class="achieve-desc">维护 codebuddy2api (:8787), nim-proxy (:8001), sub2api (:8081) 等多套容灾代理网关。</p>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">81</span>
-                    <span>🌐</span>
-                </div>
-                <h3 class="achieve-name">多模型深度校准</h3>
-                <p class="achieve-desc">在 ZCode 环境中接入 34 个 Provider 渠道与 81 款主流大模型，全参数精细校准。</p>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">273</span>
-                    <span>🛠️</span>
-                </div>
-                <h3 class="achieve-name">生产级精炼 Skills</h3>
-                <p class="achieve-desc">经 5 轮筛选治理，从 1572 个社区技能中精选沉淀出 273 项高价值活跃技能。</p>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">478</span>
-                    <span>🔑</span>
-                </div>
-                <h3 class="achieve-name">高可用动态密钥池</h3>
-                <p class="achieve-desc">NIM Proxy 管理的 API Key 池规模，覆盖 33 个独立账号自动健康探测与对冲轮转。</p>
-            </div>
-
-            <div class="bento-card col-4 card-achievement">
-                <div class="achieve-header">
-                    <span class="achieve-num">100%</span>
-                    <span>📊</span>
-                </div>
-                <h3 class="achieve-name">测试用例全绿通过</h3>
-                <p class="achieve-desc">GitHub 账号管理器 70 项测试全绿，NIM Proxy 并发竞速 378 项测试全绿交付。</p>
-            </div>
-
-            <!-- Section Title: Insights -->
-            <div class="bento-section-header">
-                <div class="bento-tag">04 / Insights</div>
-                <h2 class="bento-title">实战经验与工程洞察</h2>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">🎯 工具选择的解耦与卡位</h3>
-                <p class="insight-b">不迷信单一全能 Agent，架构设计依赖 Claude Code，敏捷打样选 Codex，海量长文本交由 Kimi Code。</p>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">🔧 自建 API 网关的主权价值</h3>
-                <p class="insight-b">网关是应对大模型供应链风险的基础设施：打通三协议无损转换、重构流式通道、多 Key 对冲限流。</p>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">⚙️ 大规模配置的代码化治理</h3>
-                <p class="insight-b">管理 34 渠道与 81 模型依赖 Git 版本化追踪，配置变更经过自动化回归测试，状态定期镜像归档。</p>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">🐛 诊断调试的日志驱动</h3>
-                <p class="insight-b">排障拒绝凭感觉猜测，善用 logs.sqlite3 审计抓包定位真实载荷，凡失败两次立即隔离单一变量。</p>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">🤝 开源协作的敬畏心</h3>
-                <p class="insight-b">高质量 PR 由干净代码、单元测试与清晰文档共同组成，在 Issue 和 Code Review 中用实测数据沟通。</p>
-            </div>
-
-            <div class="bento-card col-4 card-insight">
-                <h3 class="insight-h">📈 持续优化的量化指标</h3>
-                <p class="insight-b">持续监控 TTFB 与流式延迟，关注边缘计算成本（CF D1 配额 0.09%），定期清理技术债务。</p>
-            </div>
-
-            <!-- Footer in Bento -->
-            <footer class="bento-footer">
-                <p>&copy; 2024-2026 taozheyin-dev. Powered by AI Agents & Bento Grid Architecture.</p>
-                <p style="margin-top: 0.5rem;">
-                    <a href="https://github.com/taozheyin-dev" target="_blank" style="color: var(--brand-indigo);">GitHub @taozheyin-dev</a> ·
-                    <a href="index.html" style="color: var(--brand-indigo);">Bento Style</a> ·
-                    <a href="minimal.html" style="color: var(--brand-indigo);">Minimal Style</a> ·
-                    <a href="craft.html" style="color: var(--brand-indigo);">Craft Style</a> ·
-                    <a href="split.html" style="color: var(--brand-indigo);">Split Style</a> ·
-                    <a href="editorial.html" style="color: var(--brand-indigo);">Editorial Style</a>
-                </p>
-            </footer>
-
+<span class="code-key">data:</span> <span class="code-value">[DONE]</span></code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 保留流式语义，以可理解的格式交付响应。</p>
+          </div>
+          <div class="bench-footer"><span class="bench-footer-label">输入 → 适配 → 输出</span><span class="bench-footer-status"><span class="status-dot" aria-hidden="true"></span> 边界清楚，链路可读</span></div>
         </div>
-    </main>
+      </div>
+      <div class="hero-bottom"><span class="hero-bottom-label">把想法做成可用的工具</span><a href="#projects">向下浏览作品 <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <section id="projects" class="work-section" aria-labelledby="projects-title">
+      <div class="section-heading"><div><span class="section-eyebrow">01 / 工程实践</span><h2 id="projects-title">从具体问题，到可用工具。</h2></div><p>AI 工作流、协议接入与开发体验。<br>在实际场景里，打磨每一个细节。</p></div>
+      <div class="project-filters" role="group" aria-label="按项目方向筛选">
+        <button type="button" class="is-active" data-filter="all" aria-pressed="true">全部作品</button>
+        <button type="button" data-filter="ai" aria-pressed="false">AI 工具</button>
+        <button type="button" data-filter="api" aria-pressed="false">API 与服务</button>
+        <button type="button" data-filter="dev" aria-pressed="false">开发环境</button>
+        <button type="button" data-filter="edge" aria-pressed="false">边缘服务</button>
+      </div>
+      <div class="project-grid" data-project-list><article class="project-card" data-categories="api ai">
+      <a class="project-trigger" href="#codebuddy-detail" data-project="codebuddy" aria-haspopup="dialog" aria-label="查看 CodeBuddy2API：协议转换网关">
+        <div class="project-visual visual-gateway"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M113 58H132V180H113M132 120H151M241 120H266" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="17" y="39" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="62.0" text-anchor="middle" fill="var(--ink)" font-size="12">Chat</text><rect x="17" y="101" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">Responses</text><rect x="17" y="163" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="186.0" text-anchor="middle" fill="var(--ink)" font-size="12">Messages</text><rect x="151" y="84" width="90" height="72" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="196.0" y="124.0" text-anchor="middle" fill="white" font-size="12">协议适配</text><rect x="266" y="100" width="80" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="306.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">服务</text><text x="196" y="180" text-anchor="middle" fill="var(--ink)" font-size="10">流式事件逐步输出</text></svg></div>
+        <div class="project-info"><span class="project-index">01</span><span class="project-category">API 与服务</span>
+          <h3 class="project-title">CodeBuddy2API</h3><p class="project-summary">连接不同的 API 协议，把接入差异收敛在网关内部。</p>
+          <p class="project-result">统一调用入口，保留流式响应体验。</p><div class="project-tags"><span>协议适配</span><span>流式响应</span><span>版本迁移</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article>
+<article class="project-card" data-categories="dev ai">
+      <a class="project-trigger" href="#zcode-detail" data-project="zcode" aria-haspopup="dialog" aria-label="查看 ZCode：多模型开发环境">
+        <div class="project-visual visual-config"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M180 70V94M180 140V165M72 165H288M72 165V181M288 165V181" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="116" y="28" width="128" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="53.0" text-anchor="middle" fill="var(--ink)" font-size="12">版本化配置</text><rect x="126" y="94" width="108" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="121.0" text-anchor="middle" fill="white" font-size="12">路由规则</text><rect x="17" y="181" width="110" height="36" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="72.0" y="203.0" text-anchor="middle" fill="var(--ink)" font-size="12">模型与渠道</text><rect x="233" y="181" width="110" height="36" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="288.0" y="203.0" text-anchor="middle" fill="var(--ink)" font-size="12">技能与上下文</text><text x="56" y="123" text-anchor="middle" fill="var(--ink)" font-size="10">输入约束</text><text x="299" y="123" text-anchor="middle" fill="var(--ink)" font-size="10">输出边界</text></svg></div>
+        <div class="project-info"><span class="project-index">02</span><span class="project-category">开发环境</span>
+          <h3 class="project-title">ZCode</h3><p class="project-summary">整理模型接入、参数配置与技能，让开发环境更容易维护。</p>
+          <p class="project-result">把分散配置整理为可追踪的工作环境。</p><div class="project-tags"><span>配置治理</span><span>模型路由</span><span>技能整理</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article>
+<article class="project-card" data-categories="api">
+      <a class="project-trigger" href="#nim-detail" data-project="nim" aria-haspopup="dialog" aria-label="查看 NIM Proxy：并发代理与稳定性">
+        <div class="project-visual visual-race"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M81 120H102V52H126M102 120H126M102 120V188H126" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M230 120H270" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M230 52H250V120M230 188H250V120" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 5" opacity=".45"/><rect x="10" y="99" width="71" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="45.5" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">请求</text><rect x="126" y="32" width="104" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="56.0" text-anchor="middle" fill="var(--ink)" font-size="12">并发分支 A</text><rect x="126" y="99" width="104" height="42" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="124.0" text-anchor="middle" fill="white" font-size="12">响应归属</text><rect x="126" y="168" width="104" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="192.0" text-anchor="middle" fill="var(--ink)" font-size="12">并发分支 B</text><rect x="270" y="99" width="80" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="310.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">输出</text><text x="302" y="169" text-anchor="middle" fill="var(--ink)" font-size="10">清理 / 取消</text></svg></div>
+        <div class="project-info"><span class="project-index">03</span><span class="project-category">API 与服务</span>
+          <h3 class="project-title">NIM Proxy</h3><p class="project-summary">围绕请求竞速、凭证轮转和异常处理，维护代理链路。</p>
+          <p class="project-result">修复竞态问题，梳理并发请求的生命周期。</p><div class="project-tags"><span>并发控制</span><span>故障处理</span><span>回归测试</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article>
+<article class="project-card" data-categories="edge api">
+      <a class="project-trigger" href="#mail-detail" data-project="mail" aria-haspopup="dialog" aria-label="查看 边缘邮箱：Cloudflare 邮件服务">
+        <div class="project-visual visual-mail"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><rect x="20" y="94" width="62" height="46" rx="4" stroke="currentColor"/><path d="M20 96L51 119L82 96" stroke="currentColor"/><path d="M82 117H123M225 117H248V65H270M248 117V177H270" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="123" y="90" width="102" height="54" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="174.0" y="121.0" text-anchor="middle" fill="white" font-size="12">Worker</text><rect x="270" y="45" width="76" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="308.0" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">D1</text><rect x="270" y="157" width="76" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="308.0" y="181.0" text-anchor="middle" fill="var(--ink)" font-size="12">KV</text><text x="51" y="163" text-anchor="middle" fill="var(--ink)" font-size="11">邮件接收</text><text x="174" y="175" text-anchor="middle" fill="var(--ink)" font-size="10">接收与查询</text></svg></div>
+        <div class="project-info"><span class="project-index">04</span><span class="project-category">边缘服务</span>
+          <h3 class="project-title">边缘邮箱</h3><p class="project-summary">用 Workers、D1 与 KV 组合邮件接收和查询流程。</p>
+          <p class="project-result">完成边缘部署，按实际用量观察资源消耗。</p><div class="project-tags"><span>Workers</span><span>D1</span><span>KV</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article>
+<article class="project-card" data-categories="dev">
+      <a class="project-trigger" href="#github-detail" data-project="github" aria-haspopup="dialog" aria-label="查看 GitHub 账号管理器：开发身份与凭证隔离">
+        <div class="project-visual visual-identity"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M104 65H126M230 65H253M104 171H126M230 171H253" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M180 88V147" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 5" opacity=".45"/><rect x="9" y="42" width="95" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="56.5" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">~/work</text><rect x="126" y="42" width="104" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="69.0" text-anchor="middle" fill="white" font-size="12">工作身份</text><rect x="253" y="42" width="98" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="302.0" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">SSH A</text><rect x="9" y="148" width="95" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="56.5" y="175.0" text-anchor="middle" fill="var(--ink)" font-size="12">~/personal</text><rect x="126" y="148" width="104" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="175.0" text-anchor="middle" fill="white" font-size="12">个人身份</text><rect x="253" y="148" width="98" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="302.0" y="175.0" text-anchor="middle" fill="var(--ink)" font-size="12">SSH B</text><text x="180" y="124" text-anchor="middle" fill="var(--ink)" font-size="10">按目录匹配 · includeIf</text></svg></div>
+        <div class="project-info"><span class="project-index">05</span><span class="project-category">开发环境</span>
+          <h3 class="project-title">GitHub 账号管理器</h3><p class="project-summary">按工作目录组织 Git 身份，让不同账号各归其位。</p>
+          <p class="project-result">减少手动切换，明确目录与身份的对应关系。</p><div class="project-tags"><span>Git includeIf</span><span>SSH</span><span>Device Code</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article>
+<article class="project-card" data-categories="ai edge">
+      <a class="project-trigger" href="#navigation-detail" data-project="navigation" aria-haspopup="dialog" aria-label="查看 AI 服务导航：轻量资源入口">
+        <div class="project-visual visual-nav"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><rect x="33" y="24" width="294" height="195" rx="6" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><path d="M33 54H327" stroke="currentColor" stroke-width="1.2" opacity=".65"/><text x="83" y="44" text-anchor="middle" fill="var(--ink)" font-size="10">资源导航</text><rect x="52" y="70" width="78" height="29" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="91.0" y="88.5" text-anchor="middle" fill="white" font-size="12">全部</text><rect x="141" y="70" width="78" height="29" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="88.5" text-anchor="middle" fill="var(--ink)" font-size="12">API</text><rect x="230" y="70" width="78" height="29" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="269.0" y="88.5" text-anchor="middle" fill="var(--ink)" font-size="12">工具</text><rect x="53" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="66" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M79 129H114M79 138H104" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="53" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="66" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M79 180H114M79 189H104" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="142" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="155" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M168 129H203M168 138H193" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="142" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="155" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M168 180H203M168 189H193" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="231" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="244" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M257 129H292M257 138H282" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="231" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="244" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M257 180H292M257 189H282" stroke="currentColor" stroke-width="1.2" opacity=".65"/></svg></div>
+        <div class="project-info"><span class="project-index">06</span><span class="project-category">AI 工具</span>
+          <h3 class="project-title">AI 服务导航</h3><p class="project-summary">为 AI 服务整理清晰的分类与入口，让资源更容易找到。</p>
+          <p class="project-result">以原生静态页面交付，部署到边缘节点。</p><div class="project-tags"><span>HTML / CSS</span><span>JavaScript</span><span>Pages</span></div>
+          <span class="project-open">查看项目 <span aria-hidden="true">↗</span></span>
+        </div>
+      </a>
+    </article></div>
+      <p class="projects-footnote"><span aria-hidden="true">↗</span> 打开任一项目，查看问题背景、实现方式与技术取舍。</p>
+    </section>
+
+    <section id="tools" class="tools-section" aria-labelledby="tools-title">
+      <div class="section-heading"><div><span class="section-eyebrow">02 / 工具与环境</span><h2 id="tools-title">顺手的工具，清楚的分工。</h2></div><p>工具服务于问题。<br>让工作流保持轻巧，让系统便于维护。</p></div>
+      <div class="tool-list"><article class="tool-item"><span class="tool-number">01</span><h3 class="tool-name">Claude Code</h3><p class="tool-role">复杂任务与代码推敲</p><p class="tool-description">围绕架构、实现与调试展开工作，再用实际运行检查判断。</p></article><article class="tool-item"><span class="tool-number">02</span><h3 class="tool-name">Codex</h3><p class="tool-role">实现与迭代</p><p class="tool-description">把需求落到代码和界面，在本地验证行为，继续修正细节。</p></article><article class="tool-item"><span class="tool-number">03</span><h3 class="tool-name">ZCode / OpenCode</h3><p class="tool-role">模型与开发环境</p><p class="tool-description">组织模型接入、项目上下文和工作流程，维护日常开发环境。</p></article><article class="tool-item"><span class="tool-number">04</span><h3 class="tool-name">Kimi Code</h3><p class="tool-role">长文阅读与审查</p><p class="tool-description">辅助梳理文档和代码上下文，再回到原始材料核对关键细节。</p></article><article class="tool-item"><span class="tool-number">05</span><h3 class="tool-name">CodeBuddy</h3><p class="tool-role">协议与工具集成</p><p class="tool-description">在真实接入过程中理解接口、流式事件和不同工具的行为差异。</p></article><article class="tool-item"><span class="tool-number">06</span><h3 class="tool-name">Hermes / Pi</h3><p class="tool-role">工作流探索</p><p class="tool-description">尝试不同的 Agent 使用方式，按具体任务判断适用边界。</p></article></div>
+    </section>
+
+    <section id="approach" class="approach-section" aria-labelledby="approach-title">
+      <div class="section-heading"><div><span class="section-eyebrow">03 / 工作方法</span><h2 id="approach-title">让工程细节，经得起使用。</h2></div><p>从接口边界到日常体验。<br>让每一步都有明确的理由。</p></div>
+      <div class="principle-list"><article class="principle"><span class="principle-number">01</span><h3>先把边界说清楚</h3><p>先明确输入、输出和失败方式，再写适配。不同协议的差异应有固定的处理位置。</p></article><article class="principle"><span class="principle-number">02</span><h3>用证据缩小问题</h3><p>从日志和实际载荷出发，构造能复现问题的最小场景，每次只改变一个关键变量。</p></article><article class="principle"><span class="principle-number">03</span><h3>让配置可以追踪</h3><p>把模型、路由与环境配置纳入版本管理，保留变更原因，也为回退留下路径。</p></article><article class="principle"><span class="principle-number">04</span><h3>交付包含验证</h3><p>根据改动检查关键行为，记录限制和使用方式，让下一次维护有据可依。</p></article></div>
+      <div class="craft-closing"><span class="closing-symbol" aria-hidden="true">↳</span><p>把复杂留在实现里，<br><strong>把清楚交给使用者。</strong></p><a href="#projects">回到项目 <span aria-hidden="true">↑</span></a></div>
+    </section>
+  </main>
+  <footer class="site-footer"><div class="footer-inner"><p>YTZ · 个人技术作品集</p><p class="footer-note">在实践中构建，在使用中打磨。</p><div class="footer-links"><a href="https://github.com/taozheyin-dev" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a><a href="#main">回到顶部 ↑</a></div></div></footer>
+  <section class="project-detail-library" aria-label="项目详细记录"><details class="project-detail" id="codebuddy-detail"><summary>CodeBuddy2API · 协议转换网关</summary>
+      <div class="detail-content"><p class="detail-kicker">API 与服务 / 工程实践</p><h2>CodeBuddy2API</h2><p class="detail-subtitle">协议转换网关</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M113 58H132V180H113M132 120H151M241 120H266" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="17" y="39" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="62.0" text-anchor="middle" fill="var(--ink)" font-size="12">Chat</text><rect x="17" y="101" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">Responses</text><rect x="17" y="163" width="96" height="38" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="65.0" y="186.0" text-anchor="middle" fill="var(--ink)" font-size="12">Messages</text><rect x="151" y="84" width="90" height="72" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="196.0" y="124.0" text-anchor="middle" fill="white" font-size="12">协议适配</text><rect x="266" y="100" width="80" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="306.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">服务</text><text x="196" y="180" text-anchor="middle" fill="var(--ink)" font-size="10">流式事件逐步输出</text></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>不同工具使用 Chat Completions、Responses 和 Messages 等接口。协议、事件格式与版本差异，让接入和维护变得重复。</p></section>
+        <section><h3>我的贡献</h3><ul><li>参与多协议适配，把请求参数和响应事件的转换集中在网关边界。</li><li>调整流式处理链路，让响应片段能够边接收、边解析、边输出。</li><li>处理跨版本迁移与兼容问题，维护已有调用方式。</li></ul></section>
+        <section><h3>实现结果</h3><p>调用侧可以沿用熟悉的接口，适配工作集中在网关中；后续升级也有了更明确的检查边界。</p></section>
+        <section><h3>工程取舍</h3><p>统一协议不能抹平所有差异。工具调用、错误事件和流式结束语义仍需分别检查，避免表面兼容、实际行为不同。</p></section>
+      </div></details>
+<details class="project-detail" id="zcode-detail"><summary>ZCode · 多模型开发环境</summary>
+      <div class="detail-content"><p class="detail-kicker">开发环境 / 工程实践</p><h2>ZCode</h2><p class="detail-subtitle">多模型开发环境</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M180 70V94M180 140V165M72 165H288M72 165V181M288 165V181" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="116" y="28" width="128" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="53.0" text-anchor="middle" fill="var(--ink)" font-size="12">版本化配置</text><rect x="126" y="94" width="108" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="121.0" text-anchor="middle" fill="white" font-size="12">路由规则</text><rect x="17" y="181" width="110" height="36" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="72.0" y="203.0" text-anchor="middle" fill="var(--ink)" font-size="12">模型与渠道</text><rect x="233" y="181" width="110" height="36" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="288.0" y="203.0" text-anchor="middle" fill="var(--ink)" font-size="12">技能与上下文</text><text x="56" y="123" text-anchor="middle" fill="var(--ink)" font-size="10">输入约束</text><text x="299" y="123" text-anchor="middle" fill="var(--ink)" font-size="10">输出边界</text></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>模型与渠道逐渐增加后，上下文长度、输出限制和路由规则容易不一致。社区技能也需要筛选，才能适应日常任务。</p></section>
+        <section><h3>我的贡献</h3><ul><li>整理 Provider 和模型配置，逐项校准上下文、输出限制与思考档位。</li><li>梳理路由与回退关系，处理循环转发的配置风险。</li><li>筛选、去重和整理技能，把配置变更纳入版本管理。</li></ul></section>
+        <section><h3>实现结果</h3><p>环境的模型能力、路由关系和技能用途更清楚，定位配置问题时有了可以对照的记录。</p></section>
+        <section><h3>工程取舍</h3><p>更多接入意味着更多维护工作。优先保留用途清楚、能够持续验证的配置，减少无效选项。</p></section>
+      </div></details>
+<details class="project-detail" id="nim-detail"><summary>NIM Proxy · 并发代理与稳定性</summary>
+      <div class="detail-content"><p class="detail-kicker">API 与服务 / 工程实践</p><h2>NIM Proxy</h2><p class="detail-subtitle">并发代理与稳定性</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M81 120H102V52H126M102 120H126M102 120V188H126" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M230 120H270" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M230 52H250V120M230 188H250V120" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 5" opacity=".45"/><rect x="10" y="99" width="71" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="45.5" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">请求</text><rect x="126" y="32" width="104" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="56.0" text-anchor="middle" fill="var(--ink)" font-size="12">并发分支 A</text><rect x="126" y="99" width="104" height="42" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="124.0" text-anchor="middle" fill="white" font-size="12">响应归属</text><rect x="126" y="168" width="104" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="192.0" text-anchor="middle" fill="var(--ink)" font-size="12">并发分支 B</text><rect x="270" y="99" width="80" height="42" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="310.0" y="124.0" text-anchor="middle" fill="var(--ink)" font-size="12">输出</text><text x="302" y="169" text-anchor="middle" fill="var(--ink)" font-size="10">清理 / 取消</text></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>并发竞速可以改善等待体验，但多个协程同时返回时，状态清理和响应归属容易出现竞争。凭证状态也影响请求的稳定性。</p></section>
+        <section><h3>我的贡献</h3><ul><li>定位模型竞速流程中的竞态问题，修复并发状态处理。</li><li>维护凭证池与健康轮转逻辑，整理失败和重试的处理路径。</li><li>运行相关回归测试，并补齐日常使用中的中文交互。</li></ul></section>
+        <section><h3>实现结果</h3><p>并发响应与失败处理有了更明确的归属，相关修复经过回归验证。</p></section>
+        <section><h3>工程取舍</h3><p>请求竞速会增加上游消耗，需要同时考虑取消、清理与重试的边界，不能只关注最快的一次返回。</p></section>
+      </div></details>
+<details class="project-detail" id="mail-detail"><summary>边缘邮箱 · Cloudflare 邮件服务</summary>
+      <div class="detail-content"><p class="detail-kicker">边缘服务 / 工程实践</p><h2>边缘邮箱</h2><p class="detail-subtitle">Cloudflare 邮件服务</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><rect x="20" y="94" width="62" height="46" rx="4" stroke="currentColor"/><path d="M20 96L51 119L82 96" stroke="currentColor"/><path d="M82 117H123M225 117H248V65H270M248 117V177H270" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="123" y="90" width="102" height="54" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="174.0" y="121.0" text-anchor="middle" fill="white" font-size="12">Worker</text><rect x="270" y="45" width="76" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="308.0" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">D1</text><rect x="270" y="157" width="76" height="40" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="308.0" y="181.0" text-anchor="middle" fill="var(--ink)" font-size="12">KV</text><text x="51" y="163" text-anchor="middle" fill="var(--ink)" font-size="11">邮件接收</text><text x="174" y="175" text-anchor="middle" fill="var(--ink)" font-size="10">接收与查询</text></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>一个轻量邮件服务需要接收、保存和查询消息，同时控制部署与运维成本。</p></section>
+        <section><h3>我的贡献</h3><ul><li>组合 Cloudflare Workers、D1 和 KV，完成邮件接收与查询链路。</li><li>整理部署配置，处理实际使用中的邮件接收与域名配置问题。</li><li>观察数据库与边缘资源用量，控制日常运行成本。</li></ul></section>
+        <section><h3>实现结果</h3><p>邮件处理流程落在可独立部署的边缘服务上，无需维护常驻服务器。</p></section>
+        <section><h3>工程取舍</h3><p>Serverless 降低了日常运维负担，也引入平台配额与运行时限制。存储和查询方式需要围绕这些约束设计。</p></section>
+      </div></details>
+<details class="project-detail" id="github-detail"><summary>GitHub 账号管理器 · 开发身份与凭证隔离</summary>
+      <div class="detail-content"><p class="detail-kicker">开发环境 / 工程实践</p><h2>GitHub 账号管理器</h2><p class="detail-subtitle">开发身份与凭证隔离</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><path d="M104 65H126M230 65H253M104 171H126M230 171H253" stroke="currentColor" stroke-width="1.2" opacity=".65"/><path d="M180 88V147" stroke="currentColor" stroke-width="1.2" stroke-dasharray="4 5" opacity=".45"/><rect x="9" y="42" width="95" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="56.5" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">~/work</text><rect x="126" y="42" width="104" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="69.0" text-anchor="middle" fill="white" font-size="12">工作身份</text><rect x="253" y="42" width="98" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="302.0" y="69.0" text-anchor="middle" fill="var(--ink)" font-size="12">SSH A</text><rect x="9" y="148" width="95" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="56.5" y="175.0" text-anchor="middle" fill="var(--ink)" font-size="12">~/personal</text><rect x="126" y="148" width="104" height="46" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="178.0" y="175.0" text-anchor="middle" fill="white" font-size="12">个人身份</text><rect x="253" y="148" width="98" height="46" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="302.0" y="175.0" text-anchor="middle" fill="var(--ink)" font-size="12">SSH B</text><text x="180" y="124" text-anchor="middle" fill="var(--ink)" font-size="10">按目录匹配 · includeIf</text></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>同一台机器上的多个 GitHub 身份，需要正确使用提交信息和访问凭证。手动切换容易遗漏，也很难长期保持一致。</p></section>
+        <section><h3>我的贡献</h3><ul><li>利用 Git includeIf 按目录选择提交身份，配合 SSH 配置隔离访问凭证。</li><li>集成 OAuth Device Code 授权流程，整理终端侧的账号操作。</li><li>通过相关测试检查账号切换与凭证管理的关键路径。</li></ul></section>
+        <section><h3>实现结果</h3><p>工作目录与 Git 身份建立对应关系，日常操作减少了对手动切换的依赖。</p></section>
+        <section><h3>工程取舍</h3><p>提交身份与仓库访问权限是两条独立链路，需要分别验证，不能仅凭一次推送成功判断配置完整。</p></section>
+      </div></details>
+<details class="project-detail" id="navigation-detail"><summary>AI 服务导航 · 轻量资源入口</summary>
+      <div class="detail-content"><p class="detail-kicker">AI 工具 / 工程实践</p><h2>AI 服务导航</h2><p class="detail-subtitle">轻量资源入口</p>
+        <div class="detail-diagram"><svg class="project-diagram" viewBox="0 0 360 240" fill="none" aria-hidden="true"><rect x="33" y="24" width="294" height="195" rx="6" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><path d="M33 54H327" stroke="currentColor" stroke-width="1.2" opacity=".65"/><text x="83" y="44" text-anchor="middle" fill="var(--ink)" font-size="10">资源导航</text><rect x="52" y="70" width="78" height="29" rx="5" fill="var(--accent)" stroke="currentColor" stroke-opacity=".4"/><text x="91.0" y="88.5" text-anchor="middle" fill="white" font-size="12">全部</text><rect x="141" y="70" width="78" height="29" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="180.0" y="88.5" text-anchor="middle" fill="var(--ink)" font-size="12">API</text><rect x="230" y="70" width="78" height="29" rx="5" fill="var(--surface)" stroke="currentColor" stroke-opacity=".4"/><text x="269.0" y="88.5" text-anchor="middle" fill="var(--ink)" font-size="12">工具</text><rect x="53" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="66" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M79 129H114M79 138H104" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="53" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="66" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M79 180H114M79 189H104" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="142" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="155" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M168 129H203M168 138H193" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="142" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="155" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M168 180H203M168 189H193" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="231" y="116" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="244" cy="133" r="4" fill="var(--accent)" opacity=".7"/><path d="M257 129H292M257 138H282" stroke="currentColor" stroke-width="1.2" opacity=".65"/><rect x="231" y="167" width="76" height="35" rx="3" stroke="currentColor" stroke-opacity=".25"/><circle cx="244" cy="184" r="4" fill="var(--accent)" opacity=".7"/><path d="M257 180H292M257 189H282" stroke="currentColor" stroke-width="1.2" opacity=".65"/></svg><span>系统流程示意</span></div>
+        <section><h3>要解决的问题</h3><p>服务和资源分散在不同入口。一个日常可用的导航页，需要清楚的分类、直接的访问路径与轻量的加载体验。</p></section>
+        <section><h3>我的贡献</h3><ul><li>整理服务分类和资源入口，使用原生 HTML、CSS 与 JavaScript 实现。</li><li>完成静态站点部署，把维护范围控制在内容与交互本身。</li><li>持续整理页面结构，让资源查找路径更直接。</li></ul></section>
+        <section><h3>实现结果</h3><p>形成一个无需应用服务器的资源导航入口，内容更新和页面维护更直接。</p></section>
+        <section><h3>工程取舍</h3><p>导航的长期价值来自资源质量和维护。页面保持轻量，把注意力留给分类与链接的有效性。</p></section>
+      </div></details></section><dialog id="project-dialog" aria-labelledby="detail-title"><div class="dialog-toolbar"><span>项目记录</span><button type="button" data-close-dialog aria-label="关闭项目详情">关闭 ×</button></div><div id="project-dialog-content"></div></dialog>
 
 </body>
 </html>

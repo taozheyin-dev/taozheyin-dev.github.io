@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  {{head}}
+  <link rel="stylesheet" href="craft.css">
+</head>
+<body class="theme-craft">
+  {{header}}
+  <main id="main" class="page-shell">
+    <section class="craft-hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <p class="hero-eyebrow"><span class="status-dot" aria-hidden="true"></span> YTZ · 软件工具与工程实践</p>
+          <h1 id="hero-title">让工具协作，<br>让<span>工程落地。</span></h1>
+          <p class="hero-description">专注 AI 工具、API 网关与开发环境。<br>连接不同系统的能力，把复杂流程做成<br class="desktop-break">可靠、清楚、可复用的工具。</p>
+          <div class="hero-actions"><a class="primary-link" href="#projects">探索项目 <span aria-hidden="true">↗</span></a><a class="secondary-link" href="#approach">了解工作方法 <span aria-hidden="true">→</span></a></div>
+          <div class="hero-discipline"><span>接口设计</span><i aria-hidden="true"></i><span>工具开发</span><i aria-hidden="true"></i><span>边缘服务</span></div>
+        </div>
+
+        <div class="workbench" aria-label="API 请求处理流程示意">
+          <div class="bench-header"><div class="bench-window-dots" aria-hidden="true"><i></i><i></i><i></i></div><span>协议工作台</span><span class="bench-caption">工作方式示意</span></div>
+          <div class="bench-route" aria-hidden="true"><span class="route-endpoint">请求</span><span class="route-line"></span><span class="route-core">统一协议</span><span class="route-line"></span><span class="route-endpoint">服务</span></div>
+          <div class="bench-tabs" role="tablist" aria-label="查看请求处理的三个阶段">
+            <button id="demo-tab-0" type="button" role="tab" data-demo-step="0" aria-selected="true" aria-controls="demo-panel-0"><span>01</span> 协议输入</button>
+            <button id="demo-tab-1" type="button" role="tab" data-demo-step="1" aria-selected="false" aria-controls="demo-panel-1" tabindex="-1"><span>02</span> 适配转换</button>
+            <button id="demo-tab-2" type="button" role="tab" data-demo-step="2" aria-selected="false" aria-controls="demo-panel-2" tabindex="-1"><span>03</span> 服务输出</button>
+          </div>
+          <div id="demo-panel-0" class="bench-panel" data-demo-panel="0" role="tabpanel" aria-labelledby="demo-tab-0" tabindex="0">
+            <div class="bench-inspector"><span>标准请求入口</span><span class="protocol-tag">OpenAI 兼容协议</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> request.json<span>JSON</span></div><pre><code><span class="code-method">POST</span> /v1/chat/completions
+
+{
+  <span class="code-key">"model"</span>: <span class="code-string">"provider/model"</span>,
+  <span class="code-key">"messages"</span>: [{
+    <span class="code-key">"role"</span>: <span class="code-string">"user"</span>,
+    <span class="code-key">"content"</span>: <span class="code-string">"你好"</span>
+  }],
+  <span class="code-key">"stream"</span>: <span class="code-value">true</span>
+}</code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 以统一的入口接收请求，明确参数与协议边界。</p>
+          </div>
+          <div id="demo-panel-1" class="bench-panel" data-demo-panel="1" role="tabpanel" aria-labelledby="demo-tab-1" tabindex="0" hidden>
+            <div class="bench-inspector"><span>协议适配层</span><span class="protocol-tag">请求映射</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> adapter.ts<span>TS</span></div><pre><code><span class="code-comment">// 把差异收敛在适配边界内</span>
+<span class="code-method">const</span> request = {
+  <span class="code-key">model</span>: resolveModel(input.model),
+  <span class="code-key">messages</span>: mapMessages(input.messages),
+  <span class="code-key">stream</span>: input.stream
+};
+
+<span class="code-method">const</span> response = <span class="code-method">await</span>
+  provider.send(request);
+
+<span class="code-method">return</span> normalize(response);</code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 在明确的边界处理差异，让调用侧保持简单。</p>
+          </div>
+          <div id="demo-panel-2" class="bench-panel" data-demo-panel="2" role="tabpanel" aria-labelledby="demo-tab-2" tabindex="0" hidden>
+            <div class="bench-inspector"><span>流式响应出口</span><span class="protocol-tag">Server-Sent Events</span></div>
+            <div class="bench-code"><div class="code-file"><span class="file-dot" aria-hidden="true"></span> response.stream<span>SSE</span></div><pre><code><span class="code-comment"># 响应按统一格式逐步输出</span>
+
+<span class="code-key">data:</span> {
+  <span class="code-key">"choices"</span>: [{
+    <span class="code-key">"delta"</span>: {
+      <span class="code-key">"content"</span>: <span class="code-string">"你好"</span>
+    }
+  }]
+}
+
+<span class="code-key">data:</span> <span class="code-value">[DONE]</span></code></pre></div>
+            <p class="bench-panel-note"><span aria-hidden="true">↳</span> 保留流式语义，以可理解的格式交付响应。</p>
+          </div>
+          <div class="bench-footer"><span class="bench-footer-label">输入 → 适配 → 输出</span><span class="bench-footer-status"><span class="status-dot" aria-hidden="true"></span> 边界清楚，链路可读</span></div>
+        </div>
+      </div>
+      <div class="hero-bottom"><span class="hero-bottom-label">把想法做成可用的工具</span><a href="#projects">向下浏览作品 <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <section id="projects" class="work-section" aria-labelledby="projects-title">
+      <div class="section-heading"><div><span class="section-eyebrow">01 / 工程实践</span><h2 id="projects-title">从具体问题，到可用工具。</h2></div><p>AI 工作流、协议接入与开发体验。<br>在实际场景里，打磨每一个细节。</p></div>
+      <div class="project-filters" role="group" aria-label="按项目方向筛选">
+        <button type="button" class="is-active" data-filter="all" aria-pressed="true">全部作品</button>
+        <button type="button" data-filter="ai" aria-pressed="false">AI 工具</button>
+        <button type="button" data-filter="api" aria-pressed="false">API 与服务</button>
+        <button type="button" data-filter="dev" aria-pressed="false">开发环境</button>
+        <button type="button" data-filter="edge" aria-pressed="false">边缘服务</button>
+      </div>
+      <div class="project-grid" data-project-list>{{projects}}</div>
+      <p class="projects-footnote"><span aria-hidden="true">↗</span> 打开任一项目，查看问题背景、实现方式与技术取舍。</p>
+    </section>
+
+    <section id="tools" class="tools-section" aria-labelledby="tools-title">
+      <div class="section-heading"><div><span class="section-eyebrow">02 / 工具与环境</span><h2 id="tools-title">顺手的工具，清楚的分工。</h2></div><p>工具服务于问题。<br>让工作流保持轻巧，让系统便于维护。</p></div>
+      {{tools}}
+    </section>
+
+    <section id="approach" class="approach-section" aria-labelledby="approach-title">
+      <div class="section-heading"><div><span class="section-eyebrow">03 / 工作方法</span><h2 id="approach-title">让工程细节，经得起使用。</h2></div><p>从接口边界到日常体验。<br>让每一步都有明确的理由。</p></div>
+      {{principles}}
+      <div class="craft-closing"><span class="closing-symbol" aria-hidden="true">↳</span><p>把复杂留在实现里，<br><strong>把清楚交给使用者。</strong></p><a href="#projects">回到项目 <span aria-hidden="true">↑</span></a></div>
+    </section>
+  </main>
+  {{footer}}
+  {{dialogs}}
+  {{data}}
+</body>
+</html>
