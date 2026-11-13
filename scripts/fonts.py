@@ -12,7 +12,7 @@ OUTPUT = ROOT / 'assets' / 'fonts'
 def main():
     CACHE.mkdir(parents=True, exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    paths = list(ROOT.glob('*.html')) + list(ROOT.glob('*.css')) + [ROOT / 'portfolio.js']
+    paths = list(ROOT.glob('*.html')) + list(ROOT.glob('*.css')) + list(ROOT.glob('*.js'))
     text = ''.join(path.read_text(encoding='utf-8') for path in paths)
     # Future Latin content and common punctuation remain supported.
     characters = set(map(ord, text)) | set(range(32, 127))

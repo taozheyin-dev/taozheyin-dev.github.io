@@ -22,7 +22,7 @@ def main():
             options = list((Path(os.environ['LOCALAPPDATA']) / 'ms-playwright').glob('chromium-*/chrome-win64/chrome.exe'))
             if options:
                 executable = sorted(options)[-1]
-        browser = p.chromium.launch(headless=True, executable_path=str(executable) if executable.exists() else None)
+        browser = p.chromium.launch(headless=True, executable_path=str(executable) if executable.exists() else None, args=['--no-proxy-server'])
         context = browser.new_context(reduced_motion='reduce')
         page = context.new_page()
         page.on('pageerror', lambda error: report['errors'].append(str(error)))

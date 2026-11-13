@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MLP 学习参数的实现与可视化 | YTZ · 人工智能概论第二次作业</title>
+  <meta name="description" content="《人工智能概论》第二篇第 15 节作业：2—2—1 多层感知器求解 XOR 问题的参数学习实现与交互式可视化。">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/noto-sans-sc.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="craft.css">
+  <link rel="stylesheet" href="polish.css">
+  <link rel="stylesheet" href="mlp.css">
+  <script src="mlp.js" defer></script>
+</head>
+<body class="theme-craft lab-page">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="logo" href="index.html" aria-label="YTZ，返回作品集主页">
+        <span class="logo-mark" aria-hidden="true">↗</span>
+        <span class="logo-name">YTZ<span aria-hidden="true">.</span></span>
+      </a>
+      <nav class="main-nav" id="main-nav" aria-label="实验页面导航">
+        <a href="#stage">实验台</a>
+        <a href="#lab-params">九个参数</a>
+        <a href="#lab-code">五步代码</a>
+        <a href="#lab-math">原理推导</a>
+        <a href="index.html">返回作品集</a>
+      </nav>
+      <div class="header-actions">
+        <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">菜单 <span aria-hidden="true">+</span></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="page-shell lab">
+    <section class="lab-intro" aria-labelledby="lab-title">
+      <div class="lab-crumb">
+        <a href="index.html"><span aria-hidden="true">←</span> 作品集</a>
+        <span>人工智能概论 · 第二次作业</span>
+      </div>
+      <div class="lab-intro-grid">
+        <div>
+          <p class="lab-kicker">第二篇 · 第 15 节 · 人工神经元网络</p>
+          <h1 id="lab-title">MLP 学习参数的<br><em>实现与可视化</em></h1>
+        </div>
+        <div class="lab-intro-side">
+          <p class="lab-lead">单层感知器只能画一条直线，分不开异或（XOR）。加入一个隐藏层后，网络先把输入映射到新的特征空间，再用一条直线完成分类。下面用浏览器逐轮复现第 15 节的 2—2—1 网络训练，数值与本地 PyTorch 运行结果一致。</p>
+          <dl class="lab-facts">
+            <div><dt>网络结构</dt><dd>2—2—1</dd></div>
+            <div><dt>可学习参数</dt><dd>9 个</dd></div>
+            <div><dt>训练轮次</dt><dd>300</dd></div>
+            <div><dt>最终损失</dt><dd>0.0279</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <section id="stage" class="stage" aria-label="MLP 训练实验台">
+      <div class="stage-bar">
+        <div class="stage-title">
+          <span class="stage-pulse" aria-hidden="true"></span>
+          <span>训练实验台</span>
+          <span id="stage-status" class="stage-status">准备训练</span>
+        </div>
+        <div class="stage-options">
+          <div class="seg" role="radiogroup" aria-label="初始参数" data-option="preset">
+            <span class="seg-label">初值</span>
+            <button type="button" role="radio" data-value="textbook" aria-checked="true">教材</button>
+            <button type="button" role="radio" data-value="random" aria-checked="false">随机</button>
+            <button type="button" role="radio" data-value="asym" aria-checked="false">偏斜</button>
+          </div>
+          <div class="seg" role="radiogroup" aria-label="优化器" data-option="opt">
+            <span class="seg-label">优化器</span>
+            <button type="button" role="radio" data-value="adam" aria-checked="true">Adam</button>
+            <button type="button" role="radio" data-value="sgd" aria-checked="false">SGD</button>
+          </div>
+          <div class="seg" role="radiogroup" aria-label="学习率" data-option="lr">
+            <span class="seg-label">学习率</span>
+            <button type="button" role="radio" data-value="0.01" aria-checked="false">0.01</button>
+            <button type="button" role="radio" data-value="0.03" aria-checked="true">0.03</button>
+            <button type="button" role="radio" data-value="0.1" aria-checked="false">0.1</button>
+            <button type="button" role="radio" data-value="0.3" aria-checked="false">0.3</button>
+          </div>
+          <div class="seg" role="radiogroup" aria-label="隐藏层激活函数" data-option="act">
+            <span class="seg-label">激活</span>
+            <button type="button" role="radio" data-value="sigmoid" aria-checked="true">Sigmoid</button>
+            <button type="button" role="radio" data-value="tanh" aria-checked="false">Tanh</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="stage-grid">
+        <figure class="lab-panel">
+          <figcaption class="lab-panel-head">
+            <span class="lab-panel-index">A</span>
+            <span><b>输入空间</b><small>x₁、x₂ 平面上，网络给出的“为 1”概率</small></span>
+            <button id="toggle-lines" type="button" class="stage-chip" aria-pressed="true">隐藏单元直线</button>
+          </figcaption>
+          <div class="lab-plot" id="input-box"><canvas id="input-canvas" aria-label="输入空间的概率场与决策边界"></canvas></div>
+          <div class="lab-legend">
+            <span><i class="lg-line" style="border-color:#fff"></i>ŷ = 0.5 决策边界</span>
+            <span><i class="lg-line is-dash" style="border-color:#7fb8e0"></i>h₁ 直线</span>
+            <span><i class="lg-line is-dash" style="border-color:#e8c66a"></i>h₂ 直线</span>
+          </div>
+        </figure>
+
+        <figure class="lab-panel">
+          <figcaption class="lab-panel-head">
+            <span class="lab-panel-index">B</span>
+            <span><b>网络与参数</b><small>线宽表示数值大小，绿正橙负</small></span>
+            <div class="seg seg-sm" role="radiogroup" aria-label="网络图显示内容" data-view="netMode">
+              <button type="button" role="radio" data-value="forward" aria-checked="true">权重</button>
+              <button type="button" role="radio" data-value="backward" aria-checked="false">梯度</button>
+            </div>
+          </figcaption>
+          <div class="lab-plot"><svg id="net-svg" viewBox="0 0 360 360" role="img" aria-label="2—2—1 网络结构、权重与当前样本的激活值"></svg></div>
+          <div class="lab-legend">
+            <span><i class="lg-dot" style="background:#4cc59a"></i>正值</span>
+            <span><i class="lg-dot" style="background:#f08c6c"></i>负值</span>
+            <span id="net-legend-note">节点亮度 = 当前样本的激活值</span>
+          </div>
+        </figure>
+
+        <figure class="lab-panel">
+          <figcaption class="lab-panel-head">
+            <span class="lab-panel-index">C</span>
+            <span><b>隐藏空间</b><small>四个样本映射到 h₁、h₂ 后的位置与轨迹</small></span>
+          </figcaption>
+          <div class="lab-plot"><svg id="hidden-svg" viewBox="0 0 360 360" role="img" aria-label="隐藏层特征空间中的样本位置与输出层分类直线"></svg></div>
+          <div class="lab-legend">
+            <span><i class="lg-line is-dash" style="border-color:#fff"></i>输出层直线</span>
+            <span><i class="lg-box" style="background:rgba(76,197,154,.3)"></i>判为 1</span>
+            <span><i class="lg-box" style="background:rgba(240,140,108,.25)"></i>判为 0</span>
+          </div>
+        </figure>
+      </div>
+
+      <div id="sample-chips" class="stage-samples" role="group" aria-label="选择要检视的 XOR 样本"></div>
+
+      <div class="stage-timeline">
+        <div class="tl-controls">
+          <button id="play-btn" type="button" class="tl-play" aria-label="播放训练"></button>
+          <button id="step-back" type="button" class="tl-icon" aria-label="后退一轮">‹</button>
+          <button id="step-fwd" type="button" class="tl-icon" aria-label="前进一轮">›</button>
+          <button id="speed-btn" type="button" class="tl-icon tl-speed" aria-label="播放速度">1×</button>
+        </div>
+        <div class="tl-readout"><span>EPOCH</span><strong id="epoch-num">0</strong><small>/ 300</small></div>
+        <div class="tl-track">
+          <div class="tl-plot">
+            <svg id="loss-svg" viewBox="0 0 1000 100" preserveAspectRatio="none" aria-hidden="true"></svg>
+            <i id="tl-head" class="tl-head" aria-hidden="true"></i>
+            <i id="tl-dot" class="tl-dot" aria-hidden="true"></i>
+            <span class="tl-tag">损失曲线 · 底部色带为正确样本数</span>
+          </div>
+          <div class="tl-axis" aria-hidden="true"><span style="left:0">0</span><span style="left:33.333%">100</span><span style="left:66.667%">200</span><span style="left:100%">300</span></div>
+          <input id="epoch-range" class="tl-range" type="range" min="0" max="300" step="1" value="0" aria-label="训练轮次，拖动可跳转">
+        </div>
+        <div class="tl-metrics">
+          <div><span>BCE 损失</span><strong id="m-loss">—</strong></div>
+          <div><span>准确率</span><strong id="m-acc">—</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="lab-params" class="lab-section" aria-labelledby="params-title">
+      <div class="lab-head">
+        <div>
+          <span class="section-eyebrow">01 / 九个参数</span>
+          <h2 id="params-title">每个神经元，两份权重加一个偏置。</h2>
+        </div>
+        <p>按神经元分行：每行是该神经元接收的全部参数。曲线为参数在 300 轮中的变化，竖线跟随实验台的当前轮次；悬停卡片可在网络图中高亮对应连接。</p>
+      </div>
+      <div id="param-board" class="param-board"></div>
+    </section>
+
+    <section id="lab-code" class="lab-section" aria-labelledby="code-title">
+      <div class="lab-head">
+        <div>
+          <span class="section-eyebrow">02 / 五步代码</span>
+          <h2 id="code-title">张量、模型、损失、求梯度、更新参数。</h2>
+        </div>
+        <p>选择一步，左侧高亮对应代码，右侧显示实验台当前轮次下这一步真实计算出的数值。</p>
+      </div>
+
+      <div class="step-tabs" role="tablist" aria-label="参数学习的五个步骤">
+        <button type="button" role="tab" data-step="1" aria-selected="false" style="--sc:#3f7fae"><span>01</span><b>张量</b><small>输入与标签</small></button>
+        <button type="button" role="tab" data-step="2" aria-selected="true" style="--sc:#35705a"><span>02</span><b>模型</b><small>参数与前向计算</small></button>
+        <button type="button" role="tab" data-step="3" aria-selected="false" style="--sc:#c4613f"><span>03</span><b>损失</b><small>二元交叉熵</small></button>
+        <button type="button" role="tab" data-step="4" aria-selected="false" style="--sc:#9c4158"><span>04</span><b>求梯度</b><small>反向传播</small></button>
+        <button type="button" role="tab" data-step="5" aria-selected="false" style="--sc:#b08a2e"><span>05</span><b>更新参数</b><small>Adam 一步</small></button>
+      </div>
+
+      <div class="code-grid">
+        <div class="code-card">
+          <div class="code-card-top">
+            <div class="seg" role="tablist" aria-label="实现框架" data-fw-group>
+              <button type="button" role="tab" data-fw="pytorch" aria-selected="true">PyTorch</button>
+              <button type="button" role="tab" data-fw="tensorflow" aria-selected="false">TensorFlow</button>
+              <button type="button" role="tab" data-fw="numpy" aria-selected="false">NumPy 手写</button>
+            </div>
+            <a id="code-dl" class="code-dl" href="assets/mlp/xor_pytorch.py" download>下载脚本 <span aria-hidden="true">↓</span></a>
+          </div>
+          <div id="code-body" class="code-body" tabindex="0" aria-label="代码对照"></div>
+        </div>
+        <aside class="inspector">
+          <span class="inspector-kicker">实时数值 · Epoch <b id="insp-epoch">0</b></span>
+          <h3 id="insp-title"></h3>
+          <p id="insp-desc"></p>
+          <pre id="insp-tensor"></pre>
+        </aside>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-top"><span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>本地运行 · python xor_pytorch.py（与 xor_numpy_manual.py 输出一致）</div>
+<pre><span class="t-dim">$</span> python xor_pytorch.py
+epoch=  1 | loss=0.561960 | acc= 50.0%
+epoch= 50 | loss=0.258237 | acc=100.0%
+epoch=100 | loss=0.128869 | acc=100.0%
+epoch=200 | loss=0.050772 | acc=100.0%
+epoch=300 | loss=0.028065 | acc=100.0%
+<span class="t-dim">W        =</span> [[ 6.1371, -6.0140], [-6.0140,  6.1371]]
+<span class="t-dim">b_hidden =</span> [-3.4727, -3.4727]    <span class="t-dim">v =</span> [8.1918, 8.1918]    <span class="t-dim">b_output =</span> [-4.0141]
+<span class="t-ok">All four XOR samples classified correctly.</span></pre>
+      </div>
+    </section>
+
+    <section id="lab-math" class="lab-section" aria-labelledby="math-title">
+      <div class="lab-head">
+        <div>
+          <span class="section-eyebrow">03 / 原理推导</span>
+          <h2 id="math-title">参数为什么能被自动学对？</h2>
+        </div>
+        <p>从线性不可分出发，经过隐藏层映射、链式法则求梯度，到 Adam 的自适应更新。</p>
+      </div>
+      <div class="math-grid">
+        <article class="math-card">
+          <span class="math-num">1</span>
+          <div>
+            <h3>一条直线分不开 XOR</h3>
+            <p>单层感知器的边界是 w₁x₁ + w₂x₂ + b = 0。要把 (0,1)、(1,0) 放在正侧，(0,0)、(1,1) 放在负侧，四个不等式互相矛盾。</p>
+<pre class="formula">w₂ + b ≥ 0,  w₁ + b ≥ 0      → w₁ + w₂ + 2b ≥ 0
+b &lt; 0,  w₁ + w₂ + b &lt; 0      → w₁ + w₂ + 2b &lt; 0   矛盾</pre>
+          </div>
+        </article>
+        <article class="math-card">
+          <span class="math-num">2</span>
+          <div>
+            <h3>隐藏层改写特征空间</h3>
+            <p>训练后 h₁ 只在输入 10 时接近 1，h₂ 只在 01 时接近 1，00 与 11 都被压到原点附近。在 (h₁, h₂) 平面上，一条直线就能分开两类。</p>
+<pre class="formula">h  = σ(x·W + b_hidden)       4×2
+ŷ  = σ(h·v + b_output)       4×1</pre>
+          </div>
+        </article>
+        <article class="math-card">
+          <span class="math-num">3</span>
+          <div>
+            <h3>链式法则逐层求梯度</h3>
+            <p>Sigmoid 与交叉熵合并后，损失对输出分数的导数只剩误差 (ŷ − y)/N，再逐层乘上局部导数传回每个参数。</p>
+<pre class="formula">δ_out = (ŷ − y) / 4
+∂L/∂v = hᵀ·δ_out             ∂L/∂b_o = Σ δ_out
+δ_hid = (δ_out·vᵀ) ⊙ h ⊙ (1 − h)
+∂L/∂W = xᵀ·δ_hid             ∂L/∂b_h = Σ δ_hid</pre>
+          </div>
+        </article>
+        <article class="math-card">
+          <span class="math-num">4</span>
+          <div>
+            <h3>Adam 用动量稳定步长</h3>
+            <p>求梯度本身不改参数。Adam 维护梯度的一阶动量 m 与二阶矩 s，按自适应步长更新，在 Sigmoid 的平坦区也能稳定前进。</p>
+<pre class="formula">m ← β₁m + (1−β₁)g        s ← β₂s + (1−β₂)g²
+θ ← θ − lr · m̂ / (√ŝ + ε)    β₁=0.9, β₂=0.999</pre>
+          </div>
+        </article>
+      </div>
+      <div class="craft-closing lab-closing">
+        <span class="closing-symbol" aria-hidden="true">↳</span>
+        <p>隐藏层先换一个角度看数据，<br><strong>输出层再画那条直线。</strong></p>
+        <a href="index.html">返回作品集 <span aria-hidden="true">↩</span></a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>YTZ · 人工智能概论第二次作业</p>
+      <p class="footer-note">第二篇第 15 节 · MLP 学习参数的实现与可视化</p>
+      <div class="footer-links">
+        <a href="index.html">作品集主页</a>
+        <a href="#main">回到顶部 ↑</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

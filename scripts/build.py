@@ -110,7 +110,7 @@ def build():
         for i, p in enumerate(data["principles"], 1)) + '</div>'
     header = '''<a class="skip-link" href="#main">跳到主要内容</a><header class="site-header"><div class="header-inner">
       <a class="logo" href="#main" aria-label="YTZ，回到顶部"><span class="logo-mark" aria-hidden="true">↗</span><span class="logo-name">YTZ<span aria-hidden="true">.</span></span></a>
-      <nav class="main-nav" id="main-nav" aria-label="主导航"><a href="#projects">项目实践</a><a href="#learning">学习与实践</a><a href="#tools">工具体系</a><a href="#approach">工作方法</a></nav>
+      <nav class="main-nav" id="main-nav" aria-label="主导航"><a href="#coursework">课程作业</a><a href="#projects">项目实践</a><a href="#learning">学习与实践</a><a href="#tools">工具体系</a><a href="#approach">工作方法</a><a href="mlp.html">MLP 实验 ↗</a></nav>
       <div class="header-actions"><button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">菜单 <span aria-hidden="true">+</span></button></div>
     </div></header>'''
     footer = '''<footer class="site-footer"><div class="footer-inner"><p>YTZ · 个人技术作品集</p><p class="footer-note">在实践中构建，在使用中打磨。</p><div class="footer-links"><a href="https://github.com/taozheyin-dev" target="_blank" rel="noopener noreferrer">GitHub 主页 ↗</a><a href="#main">回到顶部 ↑</a></div></div></footer>'''

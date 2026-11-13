@@ -3,6 +3,7 @@
 <head>
   {{head}}
   <link rel="stylesheet" href="craft.css">
+  <link rel="stylesheet" href="mlp.css">
 </head>
 <body class="theme-craft">
   {{header}}
@@ -73,6 +74,57 @@
         </div>
       </div>
       <div class="hero-bottom"><span class="hero-bottom-label">把想法做成可用的工具</span><a href="#projects">向下浏览作品 <span aria-hidden="true">↓</span></a></div>
+    </section>
+
+    <section id="coursework" class="coursework-section" aria-labelledby="coursework-title">
+      <div class="coursework-banner">
+        <div>
+          <div class="coursework-meta">
+            <span class="coursework-badge"><span class="status-dot" aria-hidden="true"></span> 人工智能概论 · 第二次作业</span>
+            <span class="section-eyebrow">第二篇 第 15 节 · 人工神经元网络</span>
+          </div>
+          <h2 id="coursework-title" class="coursework-title">MLP 学习参数的实现与可视化</h2>
+          <p class="coursework-desc">围绕 2—2—1 多层感知器求解 XOR 问题，完成 PyTorch、TensorFlow 与手写 NumPy 反向传播实现，并在交互实验室中实时可视化输入决策边界、隐藏空间特征映射、反向梯度流与 9 个参数的 300 轮演化轨迹。</p>
+          <div class="coursework-highlights">
+            <span>① 张量与 2—2—1 拓扑</span>
+            <span>② 隐藏层特征空间映射</span>
+            <span>③ 链式法则自动求梯度</span>
+            <span>④ Adam 参数逐轮更新</span>
+          </div>
+          <div class="coursework-actions">
+            <a class="primary-link" href="mlp.html">进入 MLP 交互实验室 <span aria-hidden="true">↗</span></a>
+            <a class="secondary-link" href="assets/mlp/xor_pytorch.py" download>下载 PyTorch 脚本 <span aria-hidden="true">↓</span></a>
+          </div>
+        </div>
+        <div class="coursework-preview">
+          <svg viewBox="0 0 380 215" role="img" aria-label="2-2-1 MLP 解决 XOR 问题的结构与映射示意">
+            <rect x="6" y="6" width="160" height="160" rx="6" fill="#0d1310" stroke="#24312a"/>
+            <path d="M26 146 H146 M26 146 V26" stroke="#394a41" stroke-width="1.2"/>
+            <path d="M52 146 C64 90, 95 62, 146 50" fill="none" stroke="#7fb8e0" stroke-width="2" stroke-dasharray="5 3"/>
+            <path d="M26 112 C76 100, 108 70, 120 26" fill="none" stroke="#e8c66a" stroke-width="2" stroke-dasharray="5 3"/>
+            <circle cx="40" cy="132" r="7" fill="#f08c6c" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="132" cy="40" r="7" fill="#f08c6c" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="40" cy="40" r="7" fill="#4cc59a" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="132" cy="132" r="7" fill="#4cc59a" stroke="#fff" stroke-width="1.5"/>
+            <text x="86" y="183" text-anchor="middle" font-size="10.5" fill="#c7d3cc">输入空间 (x₁, x₂)</text>
+            <path d="M174 86 H204" stroke="#4cc59a" stroke-width="2" stroke-linecap="round"/>
+            <polygon points="202,81 211,86 202,91" fill="#4cc59a"/>
+            <rect x="216" y="6" width="158" height="160" rx="6" fill="#0d1310" stroke="#24312a"/>
+            <polygon points="236,26 356,26 356,146 286,146 236,96" fill="#4cc59a" fill-opacity="0.14"/>
+            <path d="M236 146 H356 M236 146 V26" stroke="#394a41" stroke-width="1.2"/>
+            <line x1="236" y1="98" x2="294" y2="146" stroke="#ffffff" stroke-width="2" stroke-dasharray="5 3"/>
+            <circle cx="246" cy="136" r="7" fill="#f08c6c" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="246" cy="42" r="7" fill="#4cc59a" stroke="#fff" stroke-width="1.5"/>
+            <circle cx="342" cy="136" r="7" fill="#4cc59a" stroke="#fff" stroke-width="1.5"/>
+            <text x="295" y="183" text-anchor="middle" font-size="10.5" fill="#c7d3cc">隐藏空间 (h₁, h₂) 线性可分</text>
+            <text x="190" y="206" text-anchor="middle" font-size="10" fill="#8fa097">2—2—1 Sigmoid · BCE Loss · Adam 300 Epochs → Loss 0.0279</text>
+          </svg>
+          <div class="coursework-preview-caption">
+            <span>4/4 XOR 样本完全分类</span>
+            <span>Float64 数值对齐 PyTorch</span>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section id="projects" class="work-section" aria-labelledby="projects-title">
