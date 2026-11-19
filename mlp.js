@@ -6,10 +6,25 @@
      ========================================================================== */
   const menuBtn = document.querySelector('.menu-toggle');
   const mainNav = document.getElementById('main-nav');
+  document.documentElement.classList.add('is-enhanced');
   if (menuBtn && mainNav) {
+    const closeMenu = () => {
+      mainNav.classList.remove('is-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+    };
     menuBtn.addEventListener('click', () => {
       const open = mainNav.classList.toggle('is-open');
       menuBtn.setAttribute('aria-expanded', String(open));
+    });
+    mainNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && mainNav.classList.contains('is-open')) {
+        closeMenu();
+        menuBtn.focus();
+      }
+    });
+    document.addEventListener('click', (event) => {
+      if (!event.target.closest('.site-header')) closeMenu();
     });
   }
 
@@ -270,6 +285,13 @@
     return (n >= 0 ? '+' : '') + n.toFixed(digits);
   }
 
+  // Render notation in explanations; executable code retains its identifiers.
+  function renderNotation(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/([bδz])_(hidden|output|out|hid|h1|h2|o|h)\b/g,
+        '<span class="math-inline">$1<sub>$2</sub></span>');
+  }
+
   /* ==========================================================================
      3. Sample Chips Bar (4 XOR Samples)
      ========================================================================== */
@@ -308,6 +330,7 @@
     if (!dom.sampleChips || !snap) return;
     dom.sampleChips.querySelectorAll('.sample-chip').forEach((btn, i) => {
       btn.classList.toggle('is-active', i === state.sampleIdx);
+      btn.setAttribute('aria-pressed', String(i === state.sampleIdx));
       const p = snap.probs[i];
       const [h1, h2] = snap.h[i];
       const fill = btn.querySelector(`[data-fill="${i}"]`);
@@ -918,7 +941,7 @@
       if (snap.epoch === 0) {
         dom.stageStatus.textContent = '初始状态 · Epoch 0';
       } else if (snap.correctCount === 4) {
-        dom.stageStatus.textContent = `已收敛 · 4/4 全对 (Loss ${snap.loss.toFixed(4)})`;
+        dom.stageStatus.textContent = '分类正确 · 4/4';
       } else {
         dom.stageStatus.textContent = `训练中 · Epoch ${snap.epoch}`;
       }
@@ -954,10 +977,10 @@
         paramMetaRuntime[p.idx] = { lo, hi, W, H };
 
         return `
-          <article class="param-card" data-param-key="${p.key}" data-param-idx="${p.idx}">
+          <article class="param-card" tabindex="0" aria-label="${p.sym}，${p.role}" data-param-key="${p.key}" data-param-idx="${p.idx}">
             <div class="param-card-top">
               <div>
-                <span class="param-sym">${p.sym}</span>
+                <span class="param-sym">${renderNotation(p.sym)}</span>
                 <span class="param-role">${p.role}</span>
               </div>
               <strong class="param-val" data-pval="${p.idx}">0.0000</strong>
@@ -985,7 +1008,7 @@
               <strong>${row.title}</strong>
               <span>${row.desc}</span>
             </div>
-            <code>${row.formula}</code>
+            <code>${renderNotation(row.formula)}</code>
           </div>
           ${cardsHtml}
         </div>`;
@@ -998,6 +1021,14 @@
         drawNetworkSvg(state.snapshots[state.epoch]);
       });
       card.addEventListener('mouseleave', () => {
+        state.hoverParam = null;
+        drawNetworkSvg(state.snapshots[state.epoch]);
+      });
+      card.addEventListener('focus', () => {
+        state.hoverParam = key;
+        drawNetworkSvg(state.snapshots[state.epoch]);
+      });
+      card.addEventListener('blur', () => {
         state.hoverParam = null;
         drawNetworkSvg(state.snapshots[state.epoch]);
       });
@@ -1231,8 +1262,8 @@
 
     const cur = stepData[state.step];
     if (dom.inspTitle) dom.inspTitle.textContent = cur.title;
-    if (dom.inspDesc) dom.inspDesc.textContent = cur.desc;
-    if (dom.inspTensor) dom.inspTensor.textContent = cur.tensor;
+    if (dom.inspDesc) dom.inspDesc.innerHTML = renderNotation(cur.desc);
+    if (dom.inspTensor) dom.inspTensor.innerHTML = renderNotation(cur.tensor);
   }
 
   /* ==========================================================================
@@ -1265,6 +1296,7 @@
     if (dom.playBtn) {
       dom.playBtn.classList.toggle('is-playing', play);
       dom.playBtn.setAttribute('aria-label', play ? '暂停训练' : '播放训练');
+      document.getElementById('play-label').textContent = play ? '暂停训练' : '播放训练';
     }
     drawNetworkSvg(state.snapshots[state.epoch]);
     if (play) {
@@ -1339,6 +1371,19 @@
   });
 
   // Timeline controls
+  document.getElementById('reset-btn')?.addEventListener('click', () => {
+    setPlaying(false);
+    Object.assign(state, { preset: 'textbook', opt: 'adam', lr: 0.03, act: 'sigmoid', epoch: 0, speed: 1 });
+    dom.speedBtn.textContent = '1×';
+    document.querySelectorAll('.seg[data-option]').forEach((group) => {
+      group.querySelectorAll('button[data-value]').forEach((button) => {
+        const checked = button.dataset.value === String(state[group.dataset.option]);
+        button.setAttribute('aria-checked', String(checked));
+        button.tabIndex = checked ? 0 : -1;
+      });
+    });
+    recomputeAll();
+  });
   if (dom.playBtn) {
     dom.playBtn.addEventListener('click', () => setPlaying(!state.playing));
   }
@@ -1399,6 +1444,42 @@
       drawInputCanvas(state.snapshots[state.epoch]);
     }
   });
+
+  // One keyboard stop per choice group; arrow keys select adjacent options.
+  document.querySelectorAll('[role="radiogroup"], [role="tablist"]').forEach((group) => {
+    const buttons = [...group.querySelectorAll('button')];
+    const syncTabStops = () => buttons.forEach((button) => {
+      button.tabIndex = button.getAttribute('aria-checked') === 'true' ||
+        button.getAttribute('aria-selected') === 'true' ? 0 : -1;
+    });
+    syncTabStops();
+    group.addEventListener('click', syncTabStops);
+    group.addEventListener('keydown', (event) => {
+      const index = buttons.indexOf(document.activeElement);
+      if (index < 0) return;
+      let next;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % buttons.length;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index + buttons.length - 1) % buttons.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = buttons.length - 1;
+      else return;
+      event.preventDefault();
+      buttons[next].focus();
+      buttons[next].click();
+    });
+  });
+
+  const sectionLinks = [...document.querySelectorAll('#main-nav a[href^="#"]')];
+  const updateNavigation = () => {
+    const current = sectionLinks.filter((link) =>
+      document.querySelector(link.hash).getBoundingClientRect().top <= 160).pop() || sectionLinks[0];
+    sectionLinks.forEach((link) => {
+      if (link === current) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  };
+  window.addEventListener('scroll', updateNavigation, { passive: true });
+  updateNavigation();
 
   // Boot
   initSampleChips();

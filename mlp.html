@@ -7,6 +7,7 @@
   <meta name="description" content="《人工智能概论》第二篇第 15 节作业：2—2—1 多层感知器求解 XOR 问题的参数学习实现与交互式可视化。">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/fonts/noto-sans-sc.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/noto-serif-sc.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="shared.css">
   <link rel="stylesheet" href="craft.css">
   <link rel="stylesheet" href="polish.css">
@@ -21,12 +22,13 @@
         <span class="logo-mark" aria-hidden="true">↗</span>
         <span class="logo-name">YTZ<span aria-hidden="true">.</span></span>
       </a>
+      <span class="header-lab-label">LEARNING LAB <span>/ 002</span></span>
       <nav class="main-nav" id="main-nav" aria-label="实验页面导航">
-        <a href="#stage">实验台</a>
+        <a href="#stage" aria-current="location">实验台</a>
         <a href="#lab-params">九个参数</a>
         <a href="#lab-code">五步代码</a>
         <a href="#lab-math">原理推导</a>
-        <a href="index.html">返回作品集</a>
+        <a class="nav-home" href="index.html">作品集 <span aria-hidden="true">↗</span></a>
       </nav>
       <div class="header-actions">
         <button class="menu-toggle" type="button" aria-controls="main-nav" aria-expanded="false">菜单 <span aria-hidden="true">+</span></button>
@@ -42,28 +44,40 @@
       </div>
       <div class="lab-intro-grid">
         <div>
-          <p class="lab-kicker">第二篇 · 第 15 节 · 人工神经元网络</p>
-          <h1 id="lab-title">MLP 学习参数的<br><em>实现与可视化</em></h1>
+          <p class="lab-kicker"><span class="kicker-rule" aria-hidden="true"></span> MULTILAYER PERCEPTRON <span>/ XOR</span></p>
+          <h1 id="lab-title">看见神经网络<br><em>学会 XOR 的过程。</em></h1>
+          <div class="lab-intro-actions">
+            <a class="lab-primary-link" href="#stage">进入实验台 <span aria-hidden="true">↘</span></a>
+            <a class="lab-text-link" href="#lab-code">从代码开始 <span aria-hidden="true">→</span></a>
+          </div>
         </div>
         <div class="lab-intro-side">
-          <p class="lab-lead">单层感知器只能画一条直线，分不开异或（XOR）。加入一个隐藏层后，网络先把输入映射到新的特征空间，再用一条直线完成分类。下面用浏览器逐轮复现第 15 节的 2—2—1 网络训练，数值与本地 PyTorch 运行结果一致。</p>
-          <dl class="lab-facts">
-            <div><dt>网络结构</dt><dd>2—2—1</dd></div>
-            <div><dt>可学习参数</dt><dd>9 个</dd></div>
-            <div><dt>训练轮次</dt><dd>300</dd></div>
-            <div><dt>最终损失</dt><dd>0.0279</dd></div>
-          </dl>
+          <span class="intro-note">一个小网络，一次完整的学习。</span>
+          <p class="lab-lead">一条直线分不开异或（XOR），一个隐藏层却能改变答案。从输入到特征，从梯度到参数，亲手探索一个 2—2—1 网络如何学会分类。</p>
+          <p class="lab-reference">人工智能概论 · 第二篇第 15 节<br>MLP 学习参数的实现与可视化</p>
         </div>
       </div>
+      <dl class="lab-facts">
+        <div><dt><span>01</span> 网络结构</dt><dd>2 <i>→</i> 2 <i>→</i> 1</dd></div>
+        <div><dt><span>02</span> 可学习参数</dt><dd>9 <small>个参数</small></dd></div>
+        <div><dt><span>03</span> 训练过程</dt><dd>300 <small>轮迭代</small></dd></div>
+        <div><dt><span>04</span> 默认配置最终损失</dt><dd>0.0279 <small>BCE</small></dd></div>
+      </dl>
     </section>
 
     <section id="stage" class="stage" aria-label="MLP 训练实验台">
+      <div class="stage-heading">
+        <div><span class="stage-eyebrow">THE INTERACTIVE LAB</span><h2>让学习过程，发生在眼前。</h2></div>
+        <p>播放训练，观察三个空间的联动。<br>拖动时间轴，回到任意一轮。</p>
+      </div>
       <div class="stage-bar">
         <div class="stage-title">
           <span class="stage-pulse" aria-hidden="true"></span>
           <span>训练实验台</span>
           <span id="stage-status" class="stage-status">准备训练</span>
         </div>
+        <button id="reset-btn" type="button" class="stage-reset"><span aria-hidden="true">↺</span> 重置实验</button>
+      </div>
         <div class="stage-options">
           <div class="seg" role="radiogroup" aria-label="初始参数" data-option="preset">
             <span class="seg-label">初值</span>
@@ -89,12 +103,11 @@
             <button type="button" role="radio" data-value="tanh" aria-checked="false">Tanh</button>
           </div>
         </div>
-      </div>
 
       <div class="stage-grid">
         <figure class="lab-panel">
           <figcaption class="lab-panel-head">
-            <span class="lab-panel-index">A</span>
+            <span class="lab-panel-index">01</span>
             <span><b>输入空间</b><small>x₁、x₂ 平面上，网络给出的“为 1”概率</small></span>
             <button id="toggle-lines" type="button" class="stage-chip" aria-pressed="true">隐藏单元直线</button>
           </figcaption>
@@ -108,7 +121,7 @@
 
         <figure class="lab-panel">
           <figcaption class="lab-panel-head">
-            <span class="lab-panel-index">B</span>
+            <span class="lab-panel-index">02</span>
             <span><b>网络与参数</b><small>线宽表示数值大小，绿正橙负</small></span>
             <div class="seg seg-sm" role="radiogroup" aria-label="网络图显示内容" data-view="netMode">
               <button type="button" role="radio" data-value="forward" aria-checked="true">权重</button>
@@ -125,7 +138,7 @@
 
         <figure class="lab-panel">
           <figcaption class="lab-panel-head">
-            <span class="lab-panel-index">C</span>
+            <span class="lab-panel-index">03</span>
             <span><b>隐藏空间</b><small>四个样本映射到 h₁、h₂ 后的位置与轨迹</small></span>
           </figcaption>
           <div class="lab-plot"><svg id="hidden-svg" viewBox="0 0 360 360" role="img" aria-label="隐藏层特征空间中的样本位置与输出层分类直线"></svg></div>
@@ -137,11 +150,12 @@
         </figure>
       </div>
 
+      <div class="samples-heading"><span>样本观察</span><span>选择一个输入，追踪它在网络中的变化 <span aria-hidden="true">↓</span></span></div>
       <div id="sample-chips" class="stage-samples" role="group" aria-label="选择要检视的 XOR 样本"></div>
 
       <div class="stage-timeline">
         <div class="tl-controls">
-          <button id="play-btn" type="button" class="tl-play" aria-label="播放训练"></button>
+          <button id="play-btn" type="button" class="tl-play" aria-label="播放训练"><span id="play-label">播放训练</span></button>
           <button id="step-back" type="button" class="tl-icon" aria-label="后退一轮">‹</button>
           <button id="step-fwd" type="button" class="tl-icon" aria-label="前进一轮">›</button>
           <button id="speed-btn" type="button" class="tl-icon tl-speed" aria-label="播放速度">1×</button>
@@ -162,13 +176,15 @@
           <div><span>准确率</span><strong id="m-acc">—</strong></div>
         </div>
       </div>
+      <div class="stage-footnote"><span>浏览器内实时计算 · 4 个 XOR 样本</span><a href="#lab-params">继续探索每一个参数 <span aria-hidden="true">↓</span></a></div>
+      <noscript><p class="lab-noscript">启用 JavaScript 后即可操作实验台。下方原理推导与 Python 脚本仍可阅读和下载。</p></noscript>
     </section>
 
     <section id="lab-params" class="lab-section" aria-labelledby="params-title">
       <div class="lab-head">
         <div>
           <span class="section-eyebrow">01 / 九个参数</span>
-          <h2 id="params-title">每个神经元，两份权重加一个偏置。</h2>
+          <h2 id="params-title">九个参数，如何逐渐找到答案。</h2>
         </div>
         <p>按神经元分行：每行是该神经元接收的全部参数。曲线为参数在 300 轮中的变化，竖线跟随实验台的当前轮次；悬停卡片可在网络图中高亮对应连接。</p>
       </div>
@@ -179,7 +195,7 @@
       <div class="lab-head">
         <div>
           <span class="section-eyebrow">02 / 五步代码</span>
-          <h2 id="code-title">张量、模型、损失、求梯度、更新参数。</h2>
+          <h2 id="code-title">把学习过程，拆成五步代码。</h2>
         </div>
         <p>选择一步，左侧高亮对应代码，右侧显示实验台当前轮次下这一步真实计算出的数值。</p>
       </div>
@@ -240,8 +256,13 @@ epoch=300 | loss=0.028065 | acc=100.0%
           <div>
             <h3>一条直线分不开 XOR</h3>
             <p>单层感知器的边界是 w₁x₁ + w₂x₂ + b = 0。要把 (0,1)、(1,0) 放在正侧，(0,0)、(1,1) 放在负侧，四个不等式互相矛盾。</p>
-<pre class="formula">w₂ + b ≥ 0,  w₁ + b ≥ 0      → w₁ + w₂ + 2b ≥ 0
-b &lt; 0,  w₁ + w₂ + b &lt; 0      → w₁ + w₂ + 2b &lt; 0   矛盾</pre>
+<div class="formula">
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>w</mi><mtext>2</mtext></msub><mo>+</mo><mi>b</mi><mo>≥</mo><mn>0</mn><mo>,</mo><msub><mi>w</mi><mtext>1</mtext></msub><mo>+</mo><mi>b</mi><mo>≥</mo><mn>0</mn></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>⇒</mo><mrow><msub><mi>w</mi><mtext>1</mtext></msub><mo>+</mo><msub><mi>w</mi><mtext>2</mtext></msub><mo>+</mo><mn>2</mn><mi>b</mi></mrow><mo>≥</mo><mn>0</mn></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>b</mi><mo>&lt;</mo><mn>0</mn><mo>,</mo><msub><mi>w</mi><mtext>1</mtext></msub><mo>+</mo><msub><mi>w</mi><mtext>2</mtext></msub><mo>+</mo><mi>b</mi><mo>&lt;</mo><mn>0</mn></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mo>⇒</mo><mrow><msub><mi>w</mi><mtext>1</mtext></msub><mo>+</mo><msub><mi>w</mi><mtext>2</mtext></msub><mo>+</mo><mn>2</mn><mi>b</mi></mrow><mo>&lt;</mo><mn>0</mn></mrow></math>
+  <span class="formula-note">两个结论相互矛盾，因此线性不可分。</span>
+</div>
           </div>
         </article>
         <article class="math-card">
@@ -249,8 +270,11 @@ b &lt; 0,  w₁ + w₂ + b &lt; 0      → w₁ + w₂ + 2b &lt; 0   矛盾</pre
           <div>
             <h3>隐藏层改写特征空间</h3>
             <p>训练后 h₁ 只在输入 10 时接近 1，h₂ 只在 01 时接近 1，00 与 11 都被压到原点附近。在 (h₁, h₂) 平面上，一条直线就能分开两类。</p>
-<pre class="formula">h  = σ(x·W + b_hidden)       4×2
-ŷ  = σ(h·v + b_output)       4×1</pre>
+<div class="formula">
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>h</mi><mo>=</mo><mrow><mi>σ</mi><mrow><mo>(</mo><mrow><mi>X</mi><mo>·</mo><mi>W</mi><mo>+</mo><msub><mi>b</mi><mtext>hidden</mtext></msub></mrow><mo>)</mo></mrow></mrow></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mover accent="true"><mi>y</mi><mo>^</mo></mover><mo>=</mo><mrow><mi>σ</mi><mrow><mo>(</mo><mrow><mi>h</mi><mo>·</mo><mi>v</mi><mo>+</mo><msub><mi>b</mi><mtext>output</mtext></msub></mrow><mo>)</mo></mrow></mrow></mrow></math>
+  <span class="formula-note">隐藏层输出：4 × 2　·　最终输出：4 × 1</span>
+</div>
           </div>
         </article>
         <article class="math-card">
@@ -258,10 +282,14 @@ b &lt; 0,  w₁ + w₂ + b &lt; 0      → w₁ + w₂ + 2b &lt; 0   矛盾</pre
           <div>
             <h3>链式法则逐层求梯度</h3>
             <p>Sigmoid 与交叉熵合并后，损失对输出分数的导数只剩误差 (ŷ − y)/N，再逐层乘上局部导数传回每个参数。</p>
-<pre class="formula">δ_out = (ŷ − y) / 4
-∂L/∂v = hᵀ·δ_out             ∂L/∂b_o = Σ δ_out
-δ_hid = (δ_out·vᵀ) ⊙ h ⊙ (1 − h)
-∂L/∂W = xᵀ·δ_hid             ∂L/∂b_h = Σ δ_hid</pre>
+<div class="formula">
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>δ</mi><mtext>out</mtext></msub><mo>=</mo><mfrac><mrow><mrow><mover accent="true"><mi>y</mi><mo>^</mo></mover><mo>−</mo><mi>y</mi></mrow></mrow><mrow><mn>4</mn></mrow></mfrac></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mrow><mrow><mo>∂</mo><mi>L</mi></mrow></mrow><mrow><mrow><mo>∂</mo><mi>v</mi></mrow></mrow></mfrac><mo>=</mo><mrow><msup><mi>h</mi><mi>T</mi></msup><mo>·</mo><msub><mi>δ</mi><mtext>out</mtext></msub></mrow></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mrow><mrow><mo>∂</mo><mi>L</mi></mrow></mrow><mrow><mrow><mo>∂</mo><msub><mi>b</mi><mtext>output</mtext></msub></mrow></mrow></mfrac><mo>=</mo><mrow><mo>∑</mo><msub><mi>δ</mi><mtext>out</mtext></msub></mrow></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>δ</mi><mtext>hid</mtext></msub><mo>=</mo><mrow><mrow><mo>(</mo><mrow><msub><mi>δ</mi><mtext>out</mtext></msub><mo>·</mo><msup><mi>v</mi><mi>T</mi></msup></mrow><mo>)</mo></mrow><mo>⊙</mo><mi>h</mi><mo>⊙</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>−</mo><mi>h</mi></mrow><mo>)</mo></mrow></mrow></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mrow><mrow><mo>∂</mo><mi>L</mi></mrow></mrow><mrow><mrow><mo>∂</mo><mi>W</mi></mrow></mrow></mfrac><mo>=</mo><mrow><msup><mi>X</mi><mi>T</mi></msup><mo>·</mo><msub><mi>δ</mi><mtext>hid</mtext></msub></mrow></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mfrac><mrow><mrow><mo>∂</mo><mi>L</mi></mrow></mrow><mrow><mrow><mo>∂</mo><msub><mi>b</mi><mtext>hidden</mtext></msub></mrow></mrow></mfrac><mo>=</mo><mrow><mo>∑</mo><msub><mi>δ</mi><mtext>hid</mtext></msub></mrow></mrow></math>
+</div>
           </div>
         </article>
         <article class="math-card">
@@ -269,15 +297,18 @@ b &lt; 0,  w₁ + w₂ + b &lt; 0      → w₁ + w₂ + 2b &lt; 0   矛盾</pre
           <div>
             <h3>Adam 用动量稳定步长</h3>
             <p>求梯度本身不改参数。Adam 维护梯度的一阶动量 m 与二阶矩 s，按自适应步长更新，在 Sigmoid 的平坦区也能稳定前进。</p>
-<pre class="formula">m ← β₁m + (1−β₁)g        s ← β₂s + (1−β₂)g²
-θ ← θ − lr · m̂ / (√ŝ + ε)    β₁=0.9, β₂=0.999</pre>
+<div class="formula">
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>m</mi><mo>←</mo><msub><mi>β</mi><mtext>1</mtext></msub><mi>m</mi><mo>+</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>−</mo><msub><mi>β</mi><mtext>1</mtext></msub></mrow><mo>)</mo></mrow><mi>g</mi></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>s</mi><mo>←</mo><msub><mi>β</mi><mtext>2</mtext></msub><mi>s</mi><mo>+</mo><mrow><mo>(</mo><mrow><mn>1</mn><mo>−</mo><msub><mi>β</mi><mtext>2</mtext></msub></mrow><mo>)</mo></mrow><msup><mi>g</mi><mn>2</mn></msup></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>θ</mi><mo>←</mo><mi>θ</mi><mo>−</mo><mi>lr</mi><mo>·</mo><mfrac><mrow><mover accent="true"><mi>m</mi><mo>^</mo></mover></mrow><mrow><mrow><msqrt><mover accent="true"><mi>s</mi><mo>^</mo></mover></msqrt><mo>+</mo><mi>ε</mi></mrow></mrow></mfrac></mrow></math>
+  <math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><mrow><msub><mi>β</mi><mtext>1</mtext></msub><mo>=</mo><mn>0.9</mn><mo>,</mo><msub><mi>β</mi><mtext>2</mtext></msub><mo>=</mo><mn>0.999</mn></mrow></math>
+</div>
           </div>
         </article>
       </div>
-      <div class="craft-closing lab-closing">
-        <span class="closing-symbol" aria-hidden="true">↳</span>
-        <p>隐藏层先换一个角度看数据，<br><strong>输出层再画那条直线。</strong></p>
-        <a href="index.html">返回作品集 <span aria-hidden="true">↩</span></a>
+      <div class="lab-closing">
+        <p>隐藏层先换一个角度看数据，<strong>输出层再画那条直线。</strong></p>
+        <a href="index.html">返回作品集 <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </main>
